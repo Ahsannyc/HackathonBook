@@ -83,6 +83,11 @@ temp/
 .env.dev
 .env.prod
 
+# Configuration files with potential secrets
+.claude/settings.local.json
+.gemini/settings.json
+claude_desktop_config.json
+
 # Ignore system directories that shouldn't be in git
 ../../../../../.VirtualBox/
 ../../../../../.bash_history
