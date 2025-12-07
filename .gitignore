@@ -1,0 +1,139 @@
+# Dependencies
+node_modules/
+venv/
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Node.js
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# System files
+.AppleDouble
+.LSOverride
+
+# Logs
+logs
+*.log
+
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# Coverage directory used by tools like istanbul
+coverage/
+*.lcov
+
+# Temporary folders
+tmp/
+temp/
+
+# Compiled binary files
+*.exe
+*.dll
+*.so
+
+# Environment specific settings
+.env
+.env.local
+.env.dev
+.env.prod
+
+# Ignore system directories that shouldn't be in git
+../../../../../.VirtualBox/
+../../../../../.bash_history
+../../../../../.cache/
+../../../../../.claude-code-router/
+../../../../../.claude.json
+../../../../../.claude.json.backup
+../../../../../.claude/
+../../../../../.config/
+../../../../../.cursor/
+../../../../../.gemini/
+../../../../../.gitconfig
+../../../../../.idlerc/
+../../../../../.ipython/
+../../../../../.lesshst
+../../../../../.local/
+../../../../../.node_repl_history
+../../../../../.python_history
+../../../../../.qwen/
+../../../../../.specify/
+../../../../../.streamlit/
+../../../../../.viminfo/
+../../../../../.vscode/
+../../../../../AIDD-30-Day-Challenge-Task-2/
+../../../../../AppData/
+../../../../../CLAUDE.md
+../../../../../Contacts/
+../../../../
+../../../../../Documents/
+../../../../../Downloads/
+../../../../../Favorites/
+../../../../../IntelGraphicsProfiles/
+../../../../../Links/
+../../../../../Music/
+../../../../../My First web Page.html
+../../../../../NTUSER.DAT
+../../../../../NTUSER.DAT{2ad838bc-efea-11ee-a54d-000d3a94eaa1}.TM.blf
+../../../../../NTUSER.DAT{2ad838bc-efea-11ee-a54d-000d3a94eaa1}.TMContainer00000000000000000001.regtrans-ms
+../../../../../NTUSER.DAT{2ad838bc-efea-11ee-a54d-000d3a94eaa1}.TMContainer00000000000000000002.regtrans-ms
+../../../../../OneDrive/
+../../../../../OpenVPN/
+../../../../../Pictures/
+../../../../../Saved Games/
+../../../../../Searches/
+../../../../../Videos/
+../../../../../battery-report.html
+../../../../../calculator.py
+../../../../../ntuser.dat.LOG1
+../../../../../ntuser.dat.LOG2
+../../../../../ntuser.ini
+../../../../../package-lock.json
+../../../../../package.json
+../../../../../specs/
+../../../../../venv/

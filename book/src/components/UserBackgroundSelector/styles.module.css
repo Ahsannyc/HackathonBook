@@ -1,0 +1,20 @@
+.selectorContainer {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-right: 16px;
+}
+
+.label {
+  color: var(--ifm-navbar-link-color);
+  font-weight: 500;
+}
+
+.select {
+  background-color: var(--ifm-navbar-background-color);
+  color: var(--ifm-navbar-link-color);
+  border: 1px solid var(--ifm-color-emphasis-300);
+  border-radius: var(--ifm-global-radius);
+  padding: 4px 8px;
+  cursor: pointer;
+}

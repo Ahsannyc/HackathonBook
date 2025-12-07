@@ -1,0 +1,84 @@
+Create a Textbook for Teaching Physical AI & Humanoid Robotics Course
+
+Target Audience: University students or early-career engineers with computer science/engineering background and introductory AI knowledge.
+
+Focus: Practical application of AI in physical robotics emphasizing embodied intelligence through simulation and deployment with ROS 2, Gazebo, NVIDIA Isaac, and VLA integration, while demonstrating measurable ROI of classroom AI through evidence-based applications.
+
+---
+
+Success Criteria (Combined):
+
+**1. Application & Evidence Requirements:**
+- Identify 3+ concrete AI applications in physical robotics with supporting evidence
+- Include 8+ peer-reviewed academic sources (2014-2024) demonstrating AI effectiveness
+- All technical claims supported by official documentation or industry examples
+- Reader can explain ROI of classroom AI after reading, with specific case examples
+
+**2. Technical Depth Requirements:**
+- Cover all 4 modules with hands-on examples and explanations:
+  - Module 1: ROS 2 fundamentals with practical implementations
+  - Module 2: Gazebo & Unity simulations with setup examples
+  - Module 3: NVIDIA Isaac integration with working examples
+  - Module 4: VLA convergence with implementation guidance
+- Include 5+ reproducible code/sim setups per module with verification steps
+- Reader can set up and run a basic humanoid simulation after reading the relevant sections
+
+**3. Practical Outcomes:**
+- Clearly demonstrate how each AI application translates to educational ROI
+- Provide verifiable examples showing learning acceleration or skill development
+- Show pathway from classroom learning to industry-relevant skills
+
+---
+
+Constraints (Unified & Prioritized):
+
+**Scope & Format:**
+- **Total Word Count:** 10,000-20,000 words total (2000-4000 per module)
+- **Structure:** Module-by-module drafting completed within 1 month
+- **Format:** Markdown source with:
+  - APA citations for academic references
+  - Inline links to official documentation, tutorials, and repos
+  - Clear demarcation between evidence-based research and practical implementation
+- **Source Requirements:**
+  - 8+ peer-reviewed journal articles (2014-2024)
+  - Official documentation, open-source repos, and tutorials (2019-2024)
+  - Industry case studies showing real-world AI deployment success
+
+**Timeline:**
+- Complete draft within 1 month (module-by-module approach)
+- Allow for 2 weeks of refinement if needed from original timeline
+
+---
+
+Not Building (Combined Exclusions):
+
+1. **Comprehensive literature review** of entire AI field
+2. **Hardware assembly manual** or detailed physical setup guides
+3. **Comparison of specific AI products/vendors** or commercial robot vendors
+4. **Discussion of ethical concerns** in AI/robotics (reserved for separate paper/resource)
+5. **Implementation guide or code examples** beyond the 5+ per module threshold
+6. **Full production-ready codebases** or proprietary SDK integrations
+
+---
+
+Quality Gates:
+
+1. **Each Module Must Have:**
+   - At least 2 peer-reviewed sources supporting concepts
+   - At least 5 working, reproducible examples
+   - Clear connection to ROI demonstrable in classroom settings
+   - Links to official documentation for all technical implementations
+
+2. **Overall Document Must:**
+   - Balance academic rigor with practical implementation
+   - Connect theoretical evidence to hands-on practice
+   - Maintain consistent tone for target audience
+   - Achieve all success criteria without scope creep
+
+3. **Verification Checklist:**
+   - ✓ 8+ peer-reviewed sources cited
+   - ✓ 3+ concrete AI applications with evidence
+   - ✓ 20+ total reproducible examples (5×4 modules)
+   - ✓ ROI explanation clear and evidence-based
+   - ✓ All code examples testable and documented
+   - ✓ No excluded topics inadvertently included
