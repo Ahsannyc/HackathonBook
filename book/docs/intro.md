@@ -2,50 +2,24 @@
 sidebar_position: 1
 ---
 
-# Tutorial Intro
+# Physical AI & Humanoid Robotics
 
-Let's discover **Docusaurus in less than 5 minutes**.
+Welcome to the comprehensive textbook on Physical AI and Humanoid Robotics. This interactive learning platform combines cutting-edge robotics knowledge with an AI-powered assistant to enhance your learning experience.
 
-## Getting Started
+## About This Book
 
-Get started by **creating a new site**.
+This textbook covers the essential topics in Physical AI, from foundational concepts to advanced implementations. You'll explore:
 
-Or **try Docusaurus immediately** with **[docusaurus.new](https://docusaurus.new)**.
-
-### What you'll need
-
-- [Node.js](https://nodejs.org/en/download/) version 20.0 or above:
-  - When installing Node.js, you are recommended to check all checkboxes related to dependencies.
-
-## Generate a new site
-
-Generate a new Docusaurus site using the **classic template**.
-
-The classic template will automatically be added to your project after you run the command:
-
-```bash
-npm init docusaurus@latest my-website classic
-```
-
-You can type this command into Command Prompt, Powershell, Terminal, or any other integrated terminal of your code editor.
-
-The command also installs all necessary dependencies you need to run Docusaurus.
-
-## Start your site
-
-Run the development server:
-
-```bash
-cd my-website
-npm run start
-```
-
-The `cd` command changes the directory you're working with. In order to work with your newly created Docusaurus site, you'll need to navigate the terminal there.
-
-The `npm run start` command builds your website locally and serves it through a development server, ready for you to view at http://localhost:3000/.
-
-Open `docs/intro.md` (this page) and edit some lines: the site **reloads automatically** and displays your changes.
+- Robotic nervous systems and control architectures
+- Digital twin technologies for robotics
+- AI-powered robot brains and cognition
+- Vision-language-action systems
+- Practical implementation strategies
 
 ## Robotics Textbook Assistant
 
 <RagChat />
+
+## Getting Started
+
+Navigate through the modules using the sidebar to begin your journey into Physical AI and humanoid robotics. Each module contains comprehensive content, practical examples, and interactive elements to deepen your understanding.
