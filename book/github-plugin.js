@@ -3,7 +3,7 @@ const path = require('path');
 
 module.exports = function (context, options) {
   const { siteDir } = context;
-  const { enabled = true, repoOwner = 'HackathonBookUser', repoName = 'HackathonBook', accessToken = process.env.GITHUB_PERSONAL_ACCESS_TOKEN } = options || {};
+  const { enabled = true, repoOwner = 'Ahsannyc', repoName = 'HackathonBook', accessToken = process.env.GITHUB_PERSONAL_ACCESS_TOKEN } = options || {};
 
   if (!enabled) {
     return {
