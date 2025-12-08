@@ -92,9 +92,9 @@ const config: Config = {
       respectPrefersColorScheme: true,
     },
     navbar: {
-      title: 'My Site',
+      title: 'Robotics Textbook',
       logo: {
-        alt: 'My Site Logo',
+        alt: 'Robotics Textbook Logo',
         src: 'img/logo.svg',
       },
       items: [
@@ -102,11 +102,11 @@ const config: Config = {
           type: 'docSidebar',
           sidebarId: 'tutorialSidebar',
           position: 'left',
-          label: 'Tutorial',
+          label: 'Modules',
         },
         {to: '/blog', label: 'Blog', position: 'left'},
         {
-          href: 'https://github.com/facebook/docusaurus',
+          href: 'https://github.com/Ahsannyc/HackathonBook',
           label: 'GitHub',
           position: 'right',
         },
