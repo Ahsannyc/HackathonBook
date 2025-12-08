@@ -37,15 +37,33 @@ module.exports = function (context, options) {
 
     getThemePath() {
       // Return the path to the theme components if needed
-      return path.resolve(__dirname, './src/plugins/github-theme');
+      // Only return path if the directory exists to avoid build errors
+      const themePath = path.resolve(__dirname, './src/plugins/github-theme');
+      // Check if theme directory exists before returning
+      try {
+        require('fs').accessSync(themePath);
+        return themePath;
+      } catch (e) {
+        // If theme directory doesn't exist, don't return a theme path
+        return null;
+      }
     },
 
     getClientModules() {
       // Return any client modules that need to be loaded
       // This is where we can add client-side code to interact with GitHub
-      return [
-        path.resolve(__dirname, './src/plugins/github-client-module'),
-      ];
+      // Only include modules that exist to avoid build errors
+      const modules = [];
+      try {
+        const clientModulePath = path.resolve(__dirname, './src/plugins/github-client-module');
+        // Check if the client module exists before adding it
+        require('fs').accessSync(clientModulePath);
+        modules.push(clientModulePath);
+      } catch (e) {
+        // If client module doesn't exist, don't include it
+        console.log('GitHub client module not found, skipping...');
+      }
+      return modules;
     },
   };
 };
