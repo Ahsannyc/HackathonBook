@@ -15,7 +15,19 @@ module.exports = function (context, options) {
     };
   }
 
-  return {
+  // Check if theme directory exists before defining getThemePath
+  const themePath = path.resolve(__dirname, './src/plugins/github-theme');
+  let hasTheme = false;
+  try {
+    require('fs').accessSync(themePath);
+    hasTheme = true;
+  } catch (e) {
+    // Theme directory doesn't exist
+    hasTheme = false;
+  }
+
+  // Build the plugin object conditionally
+  const pluginObj = {
     name: 'github-plugin',
 
     async loadContent() {
@@ -35,20 +47,6 @@ module.exports = function (context, options) {
       };
     },
 
-    getThemePath() {
-      // Return the path to the theme components if needed
-      // Only return path if the directory exists to avoid build errors
-      const themePath = path.resolve(__dirname, './src/plugins/github-theme');
-      // Check if theme directory exists before returning
-      try {
-        require('fs').accessSync(themePath);
-        return themePath;
-      } catch (e) {
-        // If theme directory doesn't exist, don't return a theme path
-        return null;
-      }
-    },
-
     getClientModules() {
       // Return any client modules that need to be loaded
       // This is where we can add client-side code to interact with GitHub
@@ -66,4 +64,13 @@ module.exports = function (context, options) {
       return modules;
     },
   };
+
+  // Only add getThemePath if the theme directory exists
+  if (hasTheme) {
+    pluginObj.getThemePath = function() {
+      return themePath;
+    };
+  }
+
+  return pluginObj;
 };

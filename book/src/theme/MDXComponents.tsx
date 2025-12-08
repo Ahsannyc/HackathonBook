@@ -1,6 +1,7 @@
 import React from 'react';
 import Component from '@docusaurus/Component';
 import PersonalizedContent from '@site/src/components/PersonalizedContent';
+import RagChat from '@site/src/components/RagChat';
 import Details from '@theme/Details';
 
 // Define the missing components that are referenced in MD files
@@ -31,6 +32,7 @@ const MDXComponents = {
   ExpertBackground,
   IntermediateBackground,
   PersonalizedContent,
+  RagChat,
   Details, // Add the Details component that Docusaurus uses
   // You can add more custom components here as needed
 };
