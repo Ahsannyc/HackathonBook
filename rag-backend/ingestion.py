@@ -39,12 +39,24 @@ class DocumentIngestor:
         self._create_collection()
 
     def _create_collection(self):
-        """Create Qdrant collection if it doesn't exist"""
+        """Create or recreate Qdrant collection with correct vector size"""
         try:
-            self.qdrant_client.get_collection(self.collection_name)
-            logger.info(f"Collection {self.collection_name} already exists")
+            collection_info = self.qdrant_client.get_collection(self.collection_name)
+            # Check if the collection has the correct vector size
+            if collection_info.config.params.vectors.size != 1024:
+                logger.info(f"Collection {self.collection_name} exists but has wrong vector size ({collection_info.config.params.vectors.size}), recreating...")
+                # Delete the existing collection with wrong dimensions
+                self.qdrant_client.delete_collection(self.collection_name)
+                # Create collection with correct vector size for text-embedding-v1
+                self.qdrant_client.create_collection(
+                    collection_name=self.collection_name,
+                    vectors_config=models.VectorParams(size=1024, distance=models.Distance.COSINE)
+                )
+                logger.info(f"Recreated collection {self.collection_name} with correct vector size (1024)")
+            else:
+                logger.info(f"Collection {self.collection_name} already exists with correct vector size (1024)")
         except:
-            # Create collection with appropriate vector size for text-embedding-v1
+            # Collection doesn't exist, create it
             self.qdrant_client.create_collection(
                 collection_name=self.collection_name,
                 vectors_config=models.VectorParams(size=1024, distance=models.Distance.COSINE)
