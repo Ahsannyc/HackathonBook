@@ -3,9 +3,14 @@ from typing import List, Dict, Any
 import os
 from qdrant_client import QdrantClient
 from qdrant_client.http import models
-from sentence_transformers import SentenceTransformer
-import tiktoken
+from openai import OpenAI
 import logging
+from dotenv import load_dotenv
+import dashscope
+from dashscope import TextEmbedding, Generation
+
+# Load environment variables from .env file
+load_dotenv()
 
 # Initialize logging
 logging.basicConfig(level=logging.INFO)
@@ -17,23 +22,36 @@ qdrant_client = QdrantClient(
     api_key=os.getenv("QDRANT_API_KEY")
 )
 
-# Initialize embedding model
-embedding_model = SentenceTransformer('all-MiniLM-L6-v2')  # Using a lightweight model as alternative to text-embedding-3-small
-
 class RAGSystem:
     def __init__(self):
         self.qdrant_client = qdrant_client
-        self.embedding_model = embedding_model
         self.collection_name = "hackathon_book_docs"
-        self.llm_model = os.getenv("LLM_MODEL", "gpt-4o-mini")
+        self.llm_model = os.getenv("LLM_MODEL", "qwen-max")
 
-        # Initialize OpenAI
-        openai.api_key = os.getenv("OPENAI_API_KEY")
+        # Initialize Qwen (DashScope)
+        api_key = os.getenv("QWEN_API_KEY")
+        if not api_key:
+            raise ValueError("QWEN_API_KEY environment variable is not set")
+
+        dashscope.api_key = api_key
 
     def embed_text(self, text: str) -> List[float]:
-        """Generate embeddings for text using the embedding model"""
-        embedding = self.embedding_model.encode([text])
-        return embedding[0].tolist()
+        """Generate embeddings for text using Qwen's embedding API"""
+        try:
+            response = TextEmbedding.call(
+                model='text-embedding-v1',
+                input=text
+            )
+            if response.status_code == 200:
+                embedding = response.output['embeddings'][0]['embedding']
+                return embedding
+            else:
+                logger.error(f"Error generating embedding: {response.code}, {response.message}")
+                return [0.0] * 1024  # text-embedding-v1 returns 1024 dimensional vectors
+        except Exception as e:
+            logger.error(f"Error generating embedding: {str(e)}")
+            # Return a zero vector as fallback
+            return [0.0] * 1024  # text-embedding-v1 returns 1024 dimensional vectors
 
     def retrieve_relevant_chunks(self, query: str, top_k: int = 5) -> List[Dict[str, Any]]:
         """Retrieve relevant document chunks from Qdrant based on the query"""
@@ -75,7 +93,7 @@ class RAGSystem:
         Answer: """
 
         try:
-            response = openai.chat.completions.create(
+            response = Generation.call(
                 model=self.llm_model,
                 messages=[
                     {"role": "system", "content": system_message},
@@ -85,7 +103,11 @@ class RAGSystem:
                 temperature=0.3
             )
 
-            return response.choices[0].message.content.strip()
+            if response.status_code == 200:
+                return response.output.text.strip()
+            else:
+                logger.error(f"Error generating answer: {response.code}, {response.message}")
+                return "I don't know — it's not in the provided content."
 
         except Exception as e:
             logger.error(f"Error generating answer: {str(e)}")
@@ -107,7 +129,7 @@ class RAGSystem:
         Answer: """
 
         try:
-            response = openai.chat.completions.create(
+            response = Generation.call(
                 model=self.llm_model,
                 messages=[
                     {"role": "system", "content": system_message},
@@ -117,7 +139,11 @@ class RAGSystem:
                 temperature=0.3
             )
 
-            return response.choices[0].message.content.strip()
+            if response.status_code == 200:
+                return response.output.text.strip()
+            else:
+                logger.error(f"Error generating answer from selected text: {response.code}, {response.message}")
+                return "I don't know — it's not in the provided content."
 
         except Exception as e:
             logger.error(f"Error generating answer from selected text: {str(e)}")

@@ -7,9 +7,14 @@ from bs4 import BeautifulSoup
 import logging
 from qdrant_client import QdrantClient
 from qdrant_client.http import models
-from sentence_transformers import SentenceTransformer
 import uuid
-from rag import RAGSystem
+from openai import OpenAI
+from dotenv import load_dotenv
+import dashscope
+from dashscope import TextEmbedding
+
+# Load environment variables from .env file
+load_dotenv()
 
 # Initialize logging
 logging.basicConfig(level=logging.INFO)
@@ -21,8 +26,14 @@ class DocumentIngestor:
             url=os.getenv("QDRANT_URL"),
             api_key=os.getenv("QDRANT_API_KEY")
         )
-        self.embedding_model = SentenceTransformer('all-MiniLM-L6-v2')
         self.collection_name = "hackathon_book_docs"
+
+        # Initialize Qwen (DashScope)
+        api_key = os.getenv("QWEN_API_KEY")
+        if not api_key:
+            raise ValueError("QWEN_API_KEY environment variable is not set")
+
+        dashscope.api_key = api_key
 
         # Create the collection if it doesn't exist
         self._create_collection()
@@ -33,10 +44,10 @@ class DocumentIngestor:
             self.qdrant_client.get_collection(self.collection_name)
             logger.info(f"Collection {self.collection_name} already exists")
         except:
-            # Create collection with appropriate vector size
+            # Create collection with appropriate vector size for text-embedding-v1
             self.qdrant_client.create_collection(
                 collection_name=self.collection_name,
-                vectors_config=models.VectorParams(size=384, distance=models.Distance.COSINE)
+                vectors_config=models.VectorParams(size=1024, distance=models.Distance.COSINE)
             )
             logger.info(f"Created collection {self.collection_name}")
 
@@ -83,9 +94,22 @@ class DocumentIngestor:
         return chunks
 
     def embed_text(self, text: str) -> List[float]:
-        """Generate embeddings for text using the embedding model"""
-        embedding = self.embedding_model.encode([text])
-        return embedding[0].tolist()
+        """Generate embeddings for text using Qwen's embedding API"""
+        try:
+            response = TextEmbedding.call(
+                model='text-embedding-v1',
+                input=text
+            )
+            if response.status_code == 200:
+                embedding = response.output['embeddings'][0]['embedding']
+                return embedding
+            else:
+                logger.error(f"Error generating embedding: {response.code}, {response.message}")
+                return [0.0] * 1024  # text-embedding-v1 returns 1024 dimensional vectors
+        except Exception as e:
+            logger.error(f"Error generating embedding: {str(e)}")
+            # Return a zero vector as fallback
+            return [0.0] * 1024  # text-embedding-v1 returns 1024 dimensional vectors
 
     def ingest_documents(self, docs_dir: str = "docs"):
         """Ingest all markdown documents from the specified directory"""

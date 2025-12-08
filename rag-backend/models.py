@@ -23,5 +23,5 @@ class ChatMetadata(Base):
     session_id = Column(String, index=True)
     user_id = Column(String, index=True)
     page_url = Column(String)
-    metadata = Column(Text)  # JSON string of additional metadata
+    metadata_info = Column(Text)  # JSON string of additional metadata (renamed to avoid SQLAlchemy conflict)
     timestamp = Column(DateTime, default=datetime.utcnow)

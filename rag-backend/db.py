@@ -3,11 +3,15 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 import os
 from models import Base
+from dotenv import load_dotenv
 
-# Database connection using Neon Serverless Postgres
-DATABASE_URL = os.getenv("NEON_DATABASE_URL", "postgresql://user:password@localhost/dbname")
+# Load environment variables from .env file
+load_dotenv()
 
-engine = create_engine(DATABASE_URL)
+# Database connection - using SQLite for local development
+DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./rag_chatbot.db")
+
+engine = create_engine(DATABASE_URL, connect_args={"check_same_thread": False} if "sqlite" in DATABASE_URL else {})
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 def get_db():
