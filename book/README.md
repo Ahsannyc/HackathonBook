@@ -1,6 +1,6 @@
-# Website
+# Robotics Textbook
 
-This website is built using [Docusaurus](https://docusaurus.io/), a modern static website generator.
+This interactive robotics textbook is built using [Docusaurus](https://docusaurus.io/), featuring a RAG chatbot for enhanced learning.
 
 ## Installation
 
