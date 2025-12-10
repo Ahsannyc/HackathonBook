@@ -1,0 +1,4 @@
+{
+  "name": "manuscript-audit",
+  "instructions": "Perform a full manuscript analysis providing actionable revision priorities. Examine:\n1. Overall narrative structure and pacing across the entire work\n2. Character development arcs and consistency throughout\n3. Theme development and integration with plot elements\n4. Major plot holes, inconsistencies, and logical issues\n5. Areas requiring significant revision vs. minor polishing\n6. Strengths and weaknesses of the overall narrative\n7. Priority order for revision efforts based on impact\n8. Specific, actionable recommendations for each major issue identified\nProvide a comprehensive report with clear prioritization for revision efforts and detailed next steps."
+}

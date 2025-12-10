@@ -1,5 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useColorMode } from '@docusaurus/theme-common';
+import { useAuth } from './auth/AuthContext';
+import { authApi } from './auth/api';
 import '../css/rag-chat.css';
 
 const RagChat = () => {
@@ -23,6 +25,7 @@ const RagChat = () => {
   const messagesEndRef = useRef(null);
   const textareaRef = useRef(null);
   const { colorMode } = useColorMode();
+  const { isAuthenticated, user } = useAuth();
 
   // Function to get selected text from the page
   const getSelectedText = () => {
@@ -72,49 +75,26 @@ const RagChat = () => {
     setMessages(newMessages);
 
     try {
-      let response;
       if (isSelectedTextQuery && selectedText) {
-        // Send selected text query
-        const response = await fetch('/rag-api/selected_text_query', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            query: userMessage,
-            selected_text: selectedText,
-            session_id: sessionId
-          })
+        // Send selected text query using auth API
+        const data = await authApi.selectedTextQuery({
+          query: userMessage,
+          selected_text: selectedText,
+          session_id: sessionId
         });
 
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-
-        const data = await response.json();
         setMessages(prev => [...prev, {
           type: 'bot',
           content: data.answer,
           sources: [] // No sources for selected text queries
         }]);
       } else {
-        // Send general query
-        const response = await fetch('/rag-api/query', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            query: userMessage,
-            session_id: sessionId
-          })
+        // Send general query using auth API
+        const data = await authApi.query({
+          query: userMessage,
+          session_id: sessionId
         });
 
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-
-        const data = await response.json();
         setMessages(prev => [...prev, {
           type: 'bot',
           content: data.answer,
@@ -161,9 +141,20 @@ const RagChat = () => {
       <div className="rag-chat-messages">
         {messages.length === 0 ? (
           <div className="rag-chat-welcome">
-            <p>Ask me anything about the robotics textbook content!</p>
-            <p>• Type a question above for general answers</p>
-            <p>• Select text on the page and click "Ask About Selected Text" for specific answers</p>
+            {isAuthenticated ? (
+              <>
+                <p>Welcome back, {user?.email}! Ask me anything about the robotics textbook content.</p>
+                <p>• Type a question above for general answers</p>
+                <p>• Select text on the page and click "Ask About Selected Text" for specific answers</p>
+              </>
+            ) : (
+              <>
+                <p>Ask me anything about the robotics textbook content!</p>
+                <p>• Type a question above for general answers</p>
+                <p>• Select text on the page and click "Ask About Selected Text" for specific answers</p>
+                <p><a href="/auth/signup">Sign up</a> or <a href="/auth/signin">sign in</a> to personalize your experience.</p>
+              </>
+            )}
           </div>
         ) : (
           messages.map((msg, index) => (

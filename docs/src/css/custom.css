@@ -28,3 +28,191 @@
   --ifm-color-primary-lightest: #4fddbf;
   --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.3);
 }
+
+/* Auth Components Styles */
+.auth-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 60vh;
+  padding: 20px;
+}
+
+.auth-form {
+  background-color: var(--ifm-background-surface-color);
+  padding: 2rem;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 400px;
+}
+
+.auth-form h2 {
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+
+.form-group {
+  margin-bottom: 1rem;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: bold;
+}
+
+.form-group input,
+.form-group select {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid var(--ifm-color-emphasis-300);
+  border-radius: 4px;
+  font-size: 1rem;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+  outline: none;
+  border-color: var(--ifm-color-primary);
+  box-shadow: 0 0 0 2px rgba(var(--ifm-color-primary-rgb), 0.2);
+}
+
+button {
+  width: 100%;
+  padding: 0.75rem;
+  background-color: var(--ifm-color-primary);
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: var(--ifm-color-primary-dark);
+}
+
+button:disabled {
+  background-color: var(--ifm-color-emphasis-200);
+  cursor: not-allowed;
+}
+
+.error-message {
+  color: #e31a1a;
+  background-color: #fee;
+  padding: 0.75rem;
+  border-radius: 4px;
+  margin-bottom: 1rem;
+  border: 1px solid #fcc;
+}
+
+.auth-form p {
+  text-align: center;
+  margin-top: 1rem;
+}
+
+/* Onboarding Styles */
+.onboarding-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 60vh;
+  padding: 20px;
+}
+
+.onboarding-form {
+  background-color: var(--ifm-background-surface-color);
+  padding: 2rem;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 500px;
+}
+
+.onboarding-form h2 {
+  margin-bottom: 0.5rem;
+}
+
+.onboarding-form p {
+  margin-bottom: 1.5rem;
+  color: var(--ifm-color-emphasis-700);
+}
+
+.onboarding-success {
+  text-align: center;
+  padding: 2rem;
+}
+
+/* Profile Styles */
+.profile-container {
+  padding: 2rem;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.profile-info,
+.onboarding-info {
+  background-color: var(--ifm-background-surface-color);
+  padding: 1.5rem;
+  border-radius: 8px;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.profile-info h3,
+.onboarding-info h3 {
+  margin-top: 0;
+  margin-bottom: 1rem;
+  color: var(--ifm-color-primary);
+}
+
+.profile-info p,
+.onboarding-info p {
+  margin: 0.5rem 0;
+}
+
+.onboarding-info form {
+  margin-top: 1rem;
+}
+
+.onboarding-info button {
+  width: auto;
+  padding: 0.5rem 1rem;
+  margin-right: 0.5rem;
+}
+
+/* Navigation Styles */
+.navbar-auth-section {
+  position: absolute;
+  right: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  z-index: 1000;
+  background-color: var(--ifm-navbar-background-color);
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+}
+
+.navbar-auth-buttons {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.navbar-auth-buttons a,
+.navbar-auth-buttons button {
+  font-size: 0.8rem;
+  padding: 0.25rem 0.5rem !important;
+  margin: 0 !important;
+  text-decoration: none;
+}
+
+.navbar-user-email {
+  display: inline-block;
+  margin-right: 0.5rem;
+  font-size: 0.8rem;
+  color: var(--ifm-navbar-link-color);
+}

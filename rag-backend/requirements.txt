@@ -7,3 +7,5 @@ python-dotenv==1.0.1
 markdown==3.7
 beautifulsoup4==4.12.3
 dashscope
+passlib[bcrypt]==1.7.4
+pyjwt==2.8.0
