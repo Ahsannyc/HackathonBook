@@ -1,5 +1,5 @@
 import React from 'react';
-import { AuthProvider } from './auth/AuthContext';
+import { AuthProvider } from './components/auth/AuthContext';
 
 // Root component that wraps the entire application
 export default function Root({ children }) {
