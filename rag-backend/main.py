@@ -43,14 +43,17 @@ rag_system = RAGSystem()
 # Create database tables
 create_tables()
 
-# Password hashing context
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+# Password hashing context with bcrypt max_length parameter
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto", bcrypt__ident="2b", bcrypt__max_rounds=12)
 
 # Authentication utility functions
 def verify_password(plain_password, hashed_password):
     return pwd_context.verify(plain_password, hashed_password)
 
 def get_password_hash(password):
+    # Ensure password is properly truncated to avoid bcrypt 72-byte limit
+    if len(password) > 72:
+        password = password[:72]
     return pwd_context.hash(password)
 
 def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
@@ -103,9 +106,18 @@ class SelectedTextQueryRequest(BaseModel):
     session_id: Optional[str] = None
     user_id: Optional[str] = None
 
+from pydantic import field_validator
+
 class UserCreate(BaseModel):
     email: str
     password: str
+
+    @field_validator('password')
+    @classmethod
+    def validate_password_length(cls, v):
+        if len(v) > 72:
+            raise ValueError('Password must be 72 characters or less to comply with bcrypt limitations')
+        return v
 
 class UserLogin(BaseModel):
     email: str

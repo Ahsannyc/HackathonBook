@@ -94,13 +94,18 @@ A student wants to use the integrated RAG chatbot, content personalization, and 
 -   **FR-028**: The system MUST include an Urdu translation button at the start of every chapter.
 -   **FR-029**: The project MUST use Claude Code Subagents and Claude Agent Skills for AI automation.
 -   **FR-030**: The governance charter MUST be bullet-pointed and cover workforce impact (e.g., automation of repetitive or risky tasks), applications in healthcare, education, infrastructure, science, and disaster response, and the balance between innovation vs precaution, rights, safety, equity, and oversight.
--   **FR-031**: The textbook content MUST be organized into modules, each containing at least one chapter.
--   **FR-032**: Each chapter MUST be broken down into at least three distinct lessons or sub-topics.
--   **FR-033**: Each chapter and lesson MUST be represented by a Docusaurus-compatible Markdown file.
--   **FR-034**: The Docusaurus sidebar navigation MUST correctly reflect the module, chapter, and lesson hierarchy.
--   **FR-035**: Code examples within lessons MUST be rendered using Docusaurus Markdown code blocks, supporting Python and ROS 2 syntax highlighting.
--   **FR-036**: Internal links between chapters and lessons MUST function correctly within the Docusaurus site.
--   **FR-037**: Each chapter/lesson Markdown file MUST include Docusaurus frontmatter with `title`, `sidebar_label`, and `sidebar_position` (or equivalent ordering metadata) for proper navigation and display.
+-   **FR-031**: The backend authentication system MUST use bcrypt==4.0.1 to ensure compatibility with passlib for secure password hashing and avoid 72-byte password length limitation errors.
+-   **FR-032**: The textbook content MUST be organized into modules, each containing at least one chapter.
+-   **FR-033**: Each chapter MUST be broken down into at least three distinct lessons or sub-topics.
+-   **FR-034**: Each chapter and lesson MUST be represented by a Docusaurus-compatible Markdown file.
+-   **FR-035**: The Docusaurus sidebar navigation MUST correctly reflect the module, chapter, and lesson hierarchy.
+-   **FR-036**: Code examples within lessons MUST be rendered using Docusaurus Markdown code blocks, supporting Python and ROS 2 syntax highlighting.
+-   **FR-037**: Internal links between chapters and lessons MUST function correctly within the Docusaurus site.
+-   **FR-038**: Each chapter/lesson Markdown file MUST include Docusaurus frontmatter with `title`, `sidebar_label`, and `sidebar_position` (or equivalent ordering metadata) for proper navigation and display.
+-   **FR-039**: All auth components MUST be SSR-safe and compatible with Docusaurus GitHub Pages deployment.
+-   **FR-040**: The system MUST maintain full functionality when deployed to static hosting environments.
+-   **FR-041**: The personalization system MUST allow users to select their experience level (Beginner, Intermediate, Expert) and display content accordingly.
+-   **FR-042**: Personalized content sections MUST be marked with appropriate tags for conditional rendering based on user's selected experience level.
 
 ### Key Entities *(include if feature involves data)*
 
@@ -121,7 +126,7 @@ A student wants to use the integrated RAG chatbot, content personalization, and 
 -   **SC-002**: All required features (auth, RAG, personalization, translation, subagents, skills) function reliably upon deployment.
 -   **SC-003**: Zero plagiarism across the entire project, verifiable by plagiarism detection tools.
 -   **SC-004**: All technical components (code, simulations, RAG, APIs) are fully reproducible by following provided instructions.
--   **SC-005**: The book deploys cleanly to GitHub Pages via Spec-Kit-Plus and Cloud Code within the specified timeline (1 month initial draft + 2 weeks refinement).
+-   **SC-005**: The book deploys cleanly to GitHub Pages via Spec-Kit-Plus and Cloud Code within the specified timeline (1 month initial draft + 2 weeks refinement), with all features (auth, RAG chat, personalization, subagents, skills) fully functional in the static hosting environment.
 -   **SC-006**: Governance content remains culturally respectful, neutral, and inclusive, as validated by expert review.
 -   **SC-007**: Readers can, after completing the textbook, articulate the measurable ROI of classroom AI, supported by at least 3 specific case examples.
 -   **SC-008**: Readers can, after completing the relevant sections of the textbook, successfully set up and run a basic humanoid simulation using provided examples.

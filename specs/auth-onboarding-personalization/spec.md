@@ -128,3 +128,16 @@ Integrate custom Better-Auth implementation with onboarding flow and personaliza
 - Docusaurus frontend framework
 - Qwen API for RAG responses
 - React Router for frontend navigation
+
+## Implementation Notes
+- All auth components (Signup, Signin, Onboarding) must be SSR-safe and use `useIsBrowser` hook with `window.location` for navigation instead of `useNavigate` from react-router-dom
+- The Navbar component must check for browser environment before accessing auth context
+- The RagChat component must use localStorage for auth state instead of directly accessing auth context during SSR
+- Import paths in auth pages must use `@site` alias for proper module resolution in Docusaurus
+- Docusaurus configuration must not have duplicate theme configurations to prevent build failures
+- Personalization functionality uses UserBackgroundSelector component to allow users to select experience level (Beginner, Intermediate, Expert)
+- Personalized content is displayed using PersonalizedContent component and background-specific MDX components
+- Content sections in markdown files are marked with 'personalization-hook' class and 'data-background' attributes for conditional rendering
+- Backend authentication requires bcrypt==4.0.1 for compatibility with passlib library to avoid 72-byte password length limitation errors
+- Password validation includes automatic truncation to 72 characters maximum to comply with bcrypt limitations
+- Authentication endpoints must properly handle password hashing with validation and error handling
