@@ -141,3 +141,5 @@ Integrate custom Better-Auth implementation with onboarding flow and personaliza
 - Backend authentication requires bcrypt==4.0.1 for compatibility with passlib library to avoid 72-byte password length limitation errors
 - Password validation includes automatic truncation to 72 characters maximum to comply with bcrypt limitations
 - Authentication endpoints must properly handle password hashing with validation and error handling
+- GitHub Pages deployment requires 'onBrokenLinks: warn' setting to prevent build failures due to broken anchor links
+- Auth pages must be properly built and deployed to GitHub Pages for client-side routing to work correctly

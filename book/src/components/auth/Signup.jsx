@@ -84,7 +84,7 @@ const Signup = () => {
           </button>
         </form>
         <p>
-          Already have an account? <a href="/signin">Sign in</a>
+          Already have an account? <a href="/auth/signin">Sign in</a>
         </p>
       </div>
     </div>
