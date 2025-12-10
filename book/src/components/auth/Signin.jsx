@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import useIsBrowser from '@docusaurus/useIsBrowser';
 
 const Signin = () => {
   const [formData, setFormData] = useState({
@@ -8,8 +8,7 @@ const Signin = () => {
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-
-  const navigate = useNavigate();
+  const isBrowser = useIsBrowser();
 
   const handleChange = (e) => {
     setFormData({
@@ -48,15 +47,21 @@ const Signin = () => {
         if (profileResponse.ok) {
           const profileData = await profileResponse.json();
           if (!profileData.onboarding_profile) {
-            // Redirect to onboarding if not completed
-            navigate('/onboarding');
+            // Redirect to onboarding if not completed - only in browser
+            if (isBrowser) {
+              window.location.href = '/auth/onboarding';
+            }
           } else {
-            // Go to dashboard/home if onboarding is complete
-            navigate('/');
+            // Go to dashboard/home if onboarding is complete - only in browser
+            if (isBrowser) {
+              window.location.href = '/';
+            }
           }
         } else {
-          // If profile request fails, go to onboarding anyway
-          navigate('/onboarding');
+          // If profile request fails, go to onboarding anyway - only in browser
+          if (isBrowser) {
+            window.location.href = '/auth/onboarding';
+          }
         }
       } else {
         setError(data.detail || 'Sign in failed');

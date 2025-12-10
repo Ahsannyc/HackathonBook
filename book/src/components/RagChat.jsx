@@ -1,7 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useColorMode } from '@docusaurus/theme-common';
-import { useAuth } from '../components/auth/AuthContext';
-import { authApi } from '../components/auth/api';
+import { authApi } from './auth/api';
 import '../css/rag-chat.css';
 
 const RagChat = () => {
@@ -9,6 +8,10 @@ const RagChat = () => {
   const [inputValue, setInputValue] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [selectedText, setSelectedText] = useState('');
+  const [authState, setAuthState] = useState({
+    isAuthenticated: false,
+    user: null
+  });
   const [sessionId, setSessionId] = useState(() => {
     // Generate a session ID that persists across page reloads
     if (typeof window !== 'undefined') {
@@ -25,7 +28,19 @@ const RagChat = () => {
   const messagesEndRef = useRef(null);
   const textareaRef = useRef(null);
   const { colorMode } = useColorMode();
-  const { isAuthenticated, user } = useAuth();
+
+  // Initialize auth state on client side only
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      // Check for auth token in localStorage
+      const token = localStorage.getItem('access_token');
+      const email = localStorage.getItem('user_email'); // assuming email is stored
+      setAuthState({
+        isAuthenticated: !!token,
+        user: token ? { email: email || 'user@example.com' } : null
+      });
+    }
+  }, []);
 
   // Function to get selected text from the page
   const getSelectedText = () => {
@@ -141,9 +156,9 @@ const RagChat = () => {
       <div className="rag-chat-messages">
         {messages.length === 0 ? (
           <div className="rag-chat-welcome">
-            {isAuthenticated ? (
+            {authState.isAuthenticated ? (
               <>
-                <p>Welcome back, {user?.email}! Ask me anything about the robotics textbook content.</p>
+                <p>Welcome back, {authState.user?.email}! Ask me anything about the robotics textbook content.</p>
                 <p>• Type a question above for general answers</p>
                 <p>• Select text on the page and click "Ask About Selected Text" for specific answers</p>
               </>

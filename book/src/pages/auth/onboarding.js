@@ -1,6 +1,6 @@
 import React from 'react';
 import Layout from '@theme/Layout';
-import Onboarding from '../components/auth/Onboarding';
+import Onboarding from '@site/src/components/auth/Onboarding';
 
 function OnboardingPage() {
   return (

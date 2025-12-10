@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import useIsBrowser from '@docusaurus/useIsBrowser';
 
 const Onboarding = () => {
   const [formData, setFormData] = useState({
@@ -9,16 +9,15 @@ const Onboarding = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [isCompleted, setIsCompleted] = useState(false);
-
-  const navigate = useNavigate();
+  const isBrowser = useIsBrowser();
 
   // Check if user is authenticated
   useEffect(() => {
     const token = localStorage.getItem('access_token');
-    if (!token) {
-      navigate('/signin');
+    if (!token && isBrowser) {
+      window.location.href = '/auth/signin';
     }
-  }, [navigate]);
+  }, [isBrowser]);
 
   const handleChange = (e) => {
     setFormData({
@@ -53,10 +52,12 @@ const Onboarding = () => {
 
       if (response.ok) {
         setIsCompleted(true);
-        // Redirect to dashboard after a short delay
-        setTimeout(() => {
-          navigate('/');
-        }, 2000);
+        // Redirect to dashboard after a short delay - only in browser
+        if (isBrowser) {
+          setTimeout(() => {
+            window.location.href = '/';
+          }, 2000);
+        }
       } else {
         setError(data.detail || 'Onboarding failed');
       }

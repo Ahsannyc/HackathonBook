@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import useIsBrowser from '@docusaurus/useIsBrowser';
 
 const Signup = () => {
   const [formData, setFormData] = useState({
@@ -8,8 +8,7 @@ const Signup = () => {
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-
-  const navigate = useNavigate();
+  const isBrowser = useIsBrowser();
 
   const handleChange = (e) => {
     setFormData({
@@ -38,8 +37,10 @@ const Signup = () => {
         // Store the token in localStorage
         localStorage.setItem('access_token', data.access_token);
 
-        // Redirect to onboarding
-        navigate('/onboarding');
+        // Redirect to onboarding - only in browser
+        if (isBrowser) {
+          window.location.href = '/auth/onboarding';
+        }
       } else {
         setError(data.detail || 'Signup failed');
       }
