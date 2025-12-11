@@ -205,6 +205,21 @@ export class AuthClient {
    */
   async signUp(data: SignUpData): Promise<{ user: User; userBackground: UserBackground } | null> {
     try {
+      // Check for any redirect parameters in the URL that might be causing issues
+      const urlParams = new URLSearchParams(window.location.search);
+      const redirectParam = urlParams.get('redirect') || urlParams.get('callbackUrl');
+
+      // If the redirect parameter is for onboarding, override it
+      if (redirectParam === '/auth/onboarding') {
+        // Remove the problematic redirect parameter
+        urlParams.delete('redirect');
+        urlParams.delete('callbackUrl');
+
+        // Update the URL without the problematic parameter
+        const newUrl = window.location.pathname + (urlParams.toString() ? '?' + urlParams.toString() : '') + window.location.hash;
+        window.history.replaceState({}, document.title, newUrl);
+      }
+
       const response = await fetch(`${this.baseUrl}/signup`, {
         method: 'POST',
         headers: {
@@ -238,6 +253,21 @@ export class AuthClient {
    */
   async signIn(data: SignInData): Promise<{ user: User } | null> {
     try {
+      // Check for any redirect parameters in the URL that might be causing issues
+      const urlParams = new URLSearchParams(window.location.search);
+      const redirectParam = urlParams.get('redirect') || urlParams.get('callbackUrl');
+
+      // If the redirect parameter is for onboarding, override it
+      if (redirectParam === '/auth/onboarding') {
+        // Remove the problematic redirect parameter
+        urlParams.delete('redirect');
+        urlParams.delete('callbackUrl');
+
+        // Update the URL without the problematic parameter
+        const newUrl = window.location.pathname + (urlParams.toString() ? '?' + urlParams.toString() : '') + window.location.hash;
+        window.history.replaceState({}, document.title, newUrl);
+      }
+
       const response = await fetch(`${this.baseUrl}/signin`, {
         method: 'POST',
         headers: {
