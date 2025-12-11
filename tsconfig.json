@@ -1,0 +1,52 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "commonjs",
+    "lib": ["ES2022", "DOM"],
+    "outDir": "./dist",
+    "rootDir": ".",
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "resolveJsonModule": true,
+    "moduleResolution": "node",
+    "allowSyntheticDefaultImports": true,
+    "declaration": true,
+    "declarationMap": true,
+    "sourceMap": true,
+    "removeComments": true,
+    "noImplicitAny": true,
+    "strictNullChecks": true,
+    "strictFunctionTypes": true,
+    "noImplicitThis": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    "noUncheckedIndexedAccess": true,
+    "noImplicitOverride": true,
+    "allowUnreachableCode": false,
+    "allowUnusedLabels": false,
+    "exactOptionalPropertyTypes": false,
+    "useUnknownInCatchVariables": true,
+    "noPropertyAccessFromIndexSignature": false,
+    "importsNotUsedAsValues": "remove",
+    "newLine": "lf",
+    "stripInternal": true,
+    "noEmit": false,
+    "incremental": true,
+    "tsBuildInfoFile": "./node_modules/.cache/tsbuildinfo"
+  },
+  "include": [
+    "backend/src/**/*",
+    "frontend/src/**/*"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist",
+    "build",
+    ".next",
+    ".nuxt",
+    ".git",
+    ".vscode"
+  ]
+}
