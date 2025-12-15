@@ -1,0 +1,33 @@
+{
+  "builds": [
+    {
+      "src": "package.json",
+      "use": "@vercel/static-build",
+      "config": {
+        "distDir": "build"
+      }
+    }
+  ],
+  "routes": [
+    {
+      "src": "/auth/onboarding/(.*)",
+      "dest": "/auth/onboarding/index.html"
+    },
+    {
+      "src": "/auth/profile/(.*)",
+      "dest": "/auth/profile/index.html"
+    },
+    {
+      "src": "/auth/signin/(.*)",
+      "dest": "/auth/signin/index.html"
+    },
+    {
+      "src": "/auth/signup/(.*)",
+      "dest": "/auth/signup/index.html"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/index.html"
+    }
+  ]
+}
