@@ -1,0 +1,30 @@
+# Railway deployment configuration
+
+[build]
+builder = "NIXPACKS"
+
+[build.nixpacks]
+phases.setup = '''
+  # Install Node.js and dependencies
+  nix-env -iA nixpkgs.nodejs-18_x
+  nix-env -iA nixpkgs.yarn
+  npm install -g typescript
+'''
+
+phases.build = '''
+  # Build the backend
+  cd backend
+  npm ci
+  npm run build
+'''
+
+phases.start = '''
+  # Start the backend server
+  cd backend
+  node dist/server.js
+'''
+
+[env]
+NODE_ENV = "production"
+PORT = "8080"
+DATABASE_URL = ":memory:"

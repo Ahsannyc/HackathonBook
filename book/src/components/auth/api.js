@@ -1,7 +1,7 @@
 // API utility functions for authenticated requests
 
 const API_BASE_URL = typeof window !== 'undefined'
-  ? ''  // Use relative paths in browser (will use the same origin as the page)
+  ? process.env.REACT_APP_API_BASE_URL || ''  // Use environment variable or relative paths
   : process.env.API_BASE_URL || 'http://localhost:8000';  // For server-side rendering
 
 // Helper function to get cookie value
