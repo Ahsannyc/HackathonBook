@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import useIsBrowser from '@docusaurus/useIsBrowser';
+import { authApi } from './api';
 
 const Onboarding = () => {
   const [formData, setFormData] = useState({
@@ -11,12 +12,21 @@ const Onboarding = () => {
   const [isCompleted, setIsCompleted] = useState(false);
   const isBrowser = useIsBrowser();
 
-  // Check if user is authenticated
+  // Check if user is authenticated by trying to get profile
   useEffect(() => {
-    const token = localStorage.getItem('access_token');
-    if (!token && isBrowser) {
-      window.location.href = '/auth/signin';
-    }
+    const checkAuth = async () => {
+      try {
+        await authApi.getProfile();
+        // If successful, user is authenticated
+      } catch (err) {
+        // If failed, redirect to sign in - only in browser
+        if (isBrowser) {
+          window.location.href = '/auth/signin';
+        }
+      }
+    };
+
+    checkAuth();
   }, [isBrowser]);
 
   const handleChange = (e) => {
@@ -31,38 +41,18 @@ const Onboarding = () => {
     setLoading(true);
     setError('');
 
-    const token = localStorage.getItem('access_token');
-    if (!token) {
-      setError('Authentication required');
-      setLoading(false);
-      return;
-    }
-
     try {
-      const response = await fetch('http://localhost:8000/auth/onboarding', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`,
-        },
-        body: JSON.stringify(formData),
-      });
+      const data = await authApi.completeOnboarding(formData);
 
-      const data = await response.json();
-
-      if (response.ok) {
-        setIsCompleted(true);
-        // Redirect to dashboard after a short delay - only in browser
-        if (isBrowser) {
-          setTimeout(() => {
-            window.location.href = '/';
-          }, 2000);
-        }
-      } else {
-        setError(data.detail || 'Onboarding failed');
+      setIsCompleted(true);
+      // Redirect to dashboard after a short delay - only in browser
+      if (isBrowser) {
+        setTimeout(() => {
+          window.location.href = '/';
+        }, 2000);
       }
     } catch (err) {
-      setError('An error occurred during onboarding');
+      setError(err.message || 'An error occurred during onboarding');
     } finally {
       setLoading(false);
     }

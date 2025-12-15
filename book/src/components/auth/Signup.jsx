@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import useIsBrowser from '@docusaurus/useIsBrowser';
+import { authApi } from './api';
 
 const Signup = () => {
   const [formData, setFormData] = useState({
@@ -23,29 +24,14 @@ const Signup = () => {
     setError('');
 
     try {
-      const response = await fetch('http://localhost:8000/auth/signup', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData),
-      });
+      const data = await authApi.signup(formData);
 
-      const data = await response.json();
-
-      if (response.ok) {
-        // Store the token in localStorage
-        localStorage.setItem('access_token', data.access_token);
-
-        // Redirect to onboarding - only in browser
-        if (isBrowser) {
-          window.location.href = '/auth/onboarding';
-        }
-      } else {
-        setError(data.detail || 'Signup failed');
+      // Redirect to onboarding - only in browser
+      if (isBrowser) {
+        window.location.href = '/auth/onboarding';
       }
     } catch (err) {
-      setError('An error occurred during signup');
+      setError(err.message || 'An error occurred during signup');
     } finally {
       setLoading(false);
     }

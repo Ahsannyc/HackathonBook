@@ -1,20 +1,34 @@
 // API utility functions for authenticated requests
 
-const API_BASE_URL = 'http://localhost:8000';
+const API_BASE_URL = typeof window !== 'undefined'
+  ? ''  // Use relative paths in browser (will use the same origin as the page)
+  : process.env.API_BASE_URL || 'http://localhost:8000';  // For server-side rendering
+
+// Helper function to get cookie value
+const getCookie = (name) => {
+  if (typeof document === 'undefined') return null;
+  const value = `; ${document.cookie}`;
+  const parts = value.split(`; ${name}=`);
+  if (parts.length === 2) return parts.pop().split(';').shift();
+  return null;
+};
+
+// Helper function to set cookie
+const setCookie = (name, value, days) => {
+  if (typeof document === 'undefined') return;
+  const expires = new Date();
+  expires.setTime(expires.getTime() + (days * 24 * 60 * 60 * 1000));
+  document.cookie = `${name}=${value};expires=${expires.toUTCString()};path=/;SameSite=Strict`;
+};
 
 export const apiCall = async (endpoint, options = {}) => {
-  const token = localStorage.getItem('access_token');
-
   const headers = {
     'Content-Type': 'application/json',
     ...options.headers,
   };
 
-  if (token) {
-    headers['Authorization'] = `Bearer ${token}`;
-  }
-
   const response = await fetch(`${API_BASE_URL}${endpoint}`, {
+    credentials: 'include',  // Include cookies in requests
     ...options,
     headers,
   });
@@ -22,7 +36,7 @@ export const apiCall = async (endpoint, options = {}) => {
   // Check if response is ok before returning
   if (!response.ok) {
     const errorData = await response.json().catch(() => ({}));
-    throw new Error(errorData.detail || `HTTP error! status: ${response.status}`);
+    throw new Error(errorData.error || errorData.detail || `HTTP error! status: ${response.status}`);
   }
 
   return response.json();

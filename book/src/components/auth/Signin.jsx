@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import useIsBrowser from '@docusaurus/useIsBrowser';
+import { authApi } from './api';
 
 const Signin = () => {
   const [formData, setFormData] = useState({
@@ -23,51 +24,30 @@ const Signin = () => {
     setError('');
 
     try {
-      const response = await fetch('http://localhost:8000/auth/signin', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData),
-      });
+      const data = await authApi.signin(formData);
 
-      const data = await response.json();
-
-      if (response.ok) {
-        // Store the token in localStorage
-        localStorage.setItem('access_token', data.access_token);
-
-        // Check if user has completed onboarding
-        const profileResponse = await fetch('http://localhost:8000/auth/profile', {
-          headers: {
-            'Authorization': `Bearer ${data.access_token}`,
-          },
-        });
-
-        if (profileResponse.ok) {
-          const profileData = await profileResponse.json();
-          if (!profileData.onboarding_profile) {
-            // Redirect to onboarding if not completed - only in browser
-            if (isBrowser) {
-              window.location.href = '/auth/onboarding';
-            }
-          } else {
-            // Go to dashboard/home if onboarding is complete - only in browser
-            if (isBrowser) {
-              window.location.href = '/';
-            }
-          }
-        } else {
-          // If profile request fails, go to onboarding anyway - only in browser
+      // Check if user has completed onboarding
+      try {
+        const profileData = await authApi.getProfile();
+        if (!profileData.onboarding_profile) {
+          // Redirect to onboarding if not completed - only in browser
           if (isBrowser) {
             window.location.href = '/auth/onboarding';
           }
+        } else {
+          // Go to dashboard/home if onboarding is complete - only in browser
+          if (isBrowser) {
+            window.location.href = '/';
+          }
         }
-      } else {
-        setError(data.detail || 'Sign in failed');
+      } catch (profileError) {
+        // If profile request fails, go to onboarding anyway - only in browser
+        if (isBrowser) {
+          window.location.href = '/auth/onboarding';
+        }
       }
     } catch (err) {
-      setError('An error occurred during sign in');
+      setError(err.message || 'An error occurred during sign in');
     } finally {
       setLoading(false);
     }

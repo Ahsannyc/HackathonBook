@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { authApi } from './api';
 
 const Profile = () => {
   const [profile, setProfile] = useState(null);
@@ -13,36 +14,19 @@ const Profile = () => {
   // Check if user is authenticated and fetch profile
   useEffect(() => {
     const fetchProfile = async () => {
-      const token = localStorage.getItem('access_token');
-      if (!token) {
-        setError('Authentication required');
-        setLoading(false);
-        return;
-      }
-
       try {
-        const response = await fetch('http://localhost:8000/auth/profile', {
-          headers: {
-            'Authorization': `Bearer ${token}`,
-          },
-        });
+        const data = await authApi.getProfile();
+        setProfile(data);
 
-        if (response.ok) {
-          const data = await response.json();
-          setProfile(data);
-
-          // Set form data for editing
-          if (data.onboarding_profile) {
-            setFormData({
-              software_experience: data.onboarding_profile.software_experience || '',
-              hardware_experience: data.onboarding_profile.hardware_experience || '',
-            });
-          }
-        } else {
-          setError('Failed to fetch profile');
+        // Set form data for editing
+        if (data.onboarding_profile) {
+          setFormData({
+            software_experience: data.onboarding_profile.software_experience || '',
+            hardware_experience: data.onboarding_profile.hardware_experience || '',
+          });
         }
       } catch (err) {
-        setError('An error occurred while fetching profile');
+        setError(err.message || 'An error occurred while fetching profile');
       } finally {
         setLoading(false);
       }
@@ -64,40 +48,22 @@ const Profile = () => {
 
   const handleSave = async (e) => {
     e.preventDefault();
-    const token = localStorage.getItem('access_token');
-    if (!token) {
-      setError('Authentication required');
-      return;
-    }
 
     try {
-      const response = await fetch('http://localhost:8000/auth/profile', {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`,
-        },
-        body: JSON.stringify(formData),
-      });
+      const updatedProfile = await authApi.updateProfile(formData);
 
-      if (response.ok) {
-        // Refresh profile data
-        const updatedProfile = await response.json();
-        setProfile(prev => ({
-          ...prev,
-          onboarding_profile: {
-            software_experience: formData.software_experience,
-            hardware_experience: formData.hardware_experience,
-            created_at: prev.onboarding_profile?.created_at || new Date().toISOString(),
-          }
-        }));
-        setEditMode(false);
-      } else {
-        const errorData = await response.json();
-        setError(errorData.detail || 'Failed to update profile');
-      }
+      // Update local state
+      setProfile(prev => ({
+        ...prev,
+        onboarding_profile: {
+          software_experience: formData.software_experience,
+          hardware_experience: formData.hardware_experience,
+          created_at: prev.onboarding_profile?.created_at || new Date().toISOString(),
+        }
+      }));
+      setEditMode(false);
     } catch (err) {
-      setError('An error occurred while updating profile');
+      setError(err.message || 'An error occurred while updating profile');
     }
   };
 
