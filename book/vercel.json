@@ -34,6 +34,9 @@
       "dest": "/blog/index.html"
     },
     {
+      "handle": "filesystem"
+    },
+    {
       "src": "/(.*)",
       "dest": "/index.html",
       "status": 200
