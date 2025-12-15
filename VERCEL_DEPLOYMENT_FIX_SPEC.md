@@ -1,13 +1,14 @@
 # Vercel Deployment Fix Specification
 
 ## Overview
-This specification documents the changes made to resolve Vercel deployment issues, including TypeScript build errors and routing problems that were causing 404 errors and network failures.
+This specification documents the changes made to resolve Vercel deployment issues, including TypeScript build errors, routing problems, and authentication issues that were causing 404 errors, network failures, and login problems.
 
 ## Problem Statement
 - Vercel deployment was failing with "Command 'npm run build' exited with 2" due to TypeScript compilation errors
 - After fixing build errors, Vercel showed 404 errors with "Code: NOT_FOUND"
 - Browser console showed "net::ERR_CONNECTION_REFUSED" and "net::ERR_NETWORK_CHANGED" errors
 - Authentication routes were not properly accessible on Vercel
+- Login functionality was failing due to hardcoded localhost API calls
 
 ## Root Causes Identified
 1. TypeScript compilation errors in backend test files
@@ -15,6 +16,8 @@ This specification documents the changes made to resolve Vercel deployment issue
 3. Improper Vercel routing configuration for Docusaurus client-side routing
 4. Incorrect handling of static assets and catch-all routes
 5. Missing proper baseUrl configuration for Vercel deployment
+6. Hardcoded localhost URLs in frontend authentication components
+7. Mismatched authentication token handling between frontend and backend
 
 ## Changes Made
 
@@ -77,6 +80,23 @@ This specification documents the changes made to resolve Vercel deployment issue
 - Updated main `build` script to handle optional frontend build: `"build": "npm run build:backend && npm run build:frontend || echo 'Frontend build optional'"`
 - Added dedicated Vercel build script: `"build:vercel": "cd book && npm run build:vercel"`
 
+### 6. Authentication API Fixes
+#### Files Modified:
+- `book/src/components/auth/api.js`
+- `book/src/components/auth/Signin.jsx`
+- `book/src/components/auth/Signup.jsx`
+- `book/src/components/auth/Profile.jsx`
+- `book/src/components/auth/Onboarding.jsx`
+- `book/src/components/auth/AuthContext.jsx`
+
+#### Changes:
+- Updated API base URL to use relative paths instead of hardcoded localhost URLs
+- Replaced direct fetch calls with centralized API module
+- Updated authentication flow to work with cookies instead of localStorage
+- Backend sets 'authjs.session-token' cookie which frontend now properly handles
+- Updated AuthContext to check for cookie-based authentication
+- Added proper cookie handling functions for get/delete operations
+
 ## Technical Details
 
 ### TypeScript Fixes
@@ -100,6 +120,14 @@ The configuration needed to support:
 - Client-side routing for documentation navigation
 - Authentication page routing
 
+### Authentication Integration
+The authentication system needed to:
+- Use relative API paths instead of hardcoded localhost URLs
+- Work with cookie-based authentication (backend sets 'authjs.session-token' cookie)
+- Properly handle session tokens from cookies instead of localStorage
+- Update all auth components (Signin, Signup, Profile, Onboarding) to use centralized API
+- Update AuthContext to work with cookie-based authentication state
+
 ## Verification Steps
 1. Backend builds successfully: `npm run build:backend`
 2. Docusaurus site builds successfully: `cd book && npm run build:vercel`
@@ -108,6 +136,9 @@ The configuration needed to support:
 5. Authentication routes are accessible
 6. Documentation navigation works properly
 7. Client-side routing functions as expected
+8. Login functionality works with proper API calls
+9. Authentication state persists via cookies
+10. All auth components properly handle authentication state
 
 ## Deployment Process
 1. Vercel should run `npm run build:vercel` (defined in package.json)
@@ -115,6 +146,8 @@ The configuration needed to support:
 3. Vercel serves the build output using the configured routing rules
 4. Static assets are served from the filesystem
 5. Client routes are handled by the catch-all rule serving index.html
+6. Authentication API calls use relative paths to backend
+7. Session management works via cookies set by backend
 
 ## Expected Outcomes
 - Vercel deployment completes successfully without build errors
@@ -124,6 +157,9 @@ The configuration needed to support:
 - Documentation navigation works properly
 - Client-side routing functions as expected
 - Both GitHub Pages and Vercel deployments work with appropriate base URLs
+- Login functionality works correctly with backend API
+- Authentication state persists properly using cookies
+- All auth-related features work as expected
 
 ## Rollback Plan
 If issues persist:
@@ -131,3 +167,5 @@ If issues persist:
 2. Remove custom routing rules and use Vercel's automatic detection
 3. Revert baseUrl changes in docusaurus.config.ts
 4. Remove type declaration files and revert to original type definitions
+5. Revert authentication components to use hardcoded localhost URLs (if needed temporarily)
+6. Revert API client to original implementation
