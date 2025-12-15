@@ -44,28 +44,28 @@ export const apiCall = async (endpoint, options = {}) => {
 
 export const authApi = {
   // Auth endpoints
-  signup: (userData) => apiCall('/auth/signup', {
+  signup: (userData) => apiCall('/api/auth/signup', {
     method: 'POST',
     body: JSON.stringify(userData),
   }),
 
-  signin: (userData) => apiCall('/auth/signin', {
+  signin: (userData) => apiCall('/api/auth/signin', {
     method: 'POST',
     body: JSON.stringify(userData),
   }),
 
   // Profile endpoints
-  getProfile: () => apiCall('/auth/profile', {
+  getProfile: () => apiCall('/api/auth/profile', {
     method: 'GET',
   }),
 
-  updateProfile: (profileData) => apiCall('/auth/profile', {
+  updateProfile: (profileData) => apiCall('/api/auth/profile', {
     method: 'PUT',
     body: JSON.stringify(profileData),
   }),
 
   // Onboarding endpoint
-  completeOnboarding: (onboardingData) => apiCall('/auth/onboarding', {
+  completeOnboarding: (onboardingData) => apiCall('/api/auth/onboarding', {
     method: 'POST',
     body: JSON.stringify(onboardingData),
   }),
