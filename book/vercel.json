@@ -26,8 +26,17 @@
       "dest": "/auth/signup/index.html"
     },
     {
+      "src": "/docs/(.*)",
+      "dest": "/docs/index.html"
+    },
+    {
+      "src": "/blog/(.*)",
+      "dest": "/blog/index.html"
+    },
+    {
       "src": "/(.*)",
-      "dest": "/index.html"
+      "dest": "/index.html",
+      "status": 200
     }
   ]
 }
