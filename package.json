@@ -6,11 +6,11 @@
   "scripts": {
     "dev": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\"",
     "dev:backend": "nodemon --watch backend/src --exec \"npm run build:backend && node backend/dist/server.js\"",
-    "dev:frontend": "cd frontend && npm run dev",
+    "dev:frontend": "cd book && npm run start",
     "build": "npm run build:backend && npm run build:frontend || echo 'Frontend build optional'",
     "build:vercel": "cd book && npm run build:vercel",
     "build:backend": "tsc --project backend/tsconfig.json",
-    "build:frontend": "cd frontend && npm run build",
+    "build:frontend": "cd book && npm run build",
     "start": "node backend/dist/server.js",
     "test": "jest",
     "test:e2e": "cypress run",
@@ -26,7 +26,8 @@
   "author": "HackathonBook Team",
   "license": "MIT",
   "dependencies": {
-    "better-auth": "^0.0.1-beta.13",
+    "better-auth": "^0.3.6",
+    "better-sqlite3": "^12.5.0",
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
     "express": "^4.18.2"
