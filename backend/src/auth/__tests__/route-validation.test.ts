@@ -7,13 +7,64 @@ import {
   validateSignInRequest,
   validateUserBackgroundRequest
 } from '../route-validation';
+import type { Request, Response } from 'express';
 
 // Mock Express request and response objects
-const createMockRequest = (body: any = {}) => ({
-  body,
-  params: {},
-  query: {},
-});
+const createMockRequest = (body: any = {}): Request => {
+  return {
+    body,
+    params: {},
+    query: {},
+    cookies: {},
+    signedCookies: {},
+    get: () => '',
+    header: () => '',
+    accepts: () => true,
+    acceptsCharsets: () => true,
+    acceptsEncodings: () => true,
+    acceptsLanguages: () => true,
+    is: () => '',
+    range: () => [],
+    param: () => '',
+    route: {},
+    baseUrl: '',
+    originalUrl: '',
+    method: 'POST',
+    url: '/',
+    headers: {},
+    protocol: 'http',
+    ip: '127.0.0.1',
+    ips: ['127.0.0.1'],
+    subdomains: [],
+    path: '/',
+    hostname: 'localhost',
+    fresh: false,
+    stale: true,
+    xhr: false,
+    session: undefined,
+    user: undefined,
+    isAuthenticated: () => false,
+    logout: () => {},
+    login: () => {},
+    loginWith: () => {},
+    auth: {},
+    // Additional properties to satisfy Express Request interface
+    accepted: [],
+    languages: [],
+    acceptedLanguages: [],
+    acceptedCharsets: [],
+    acceptedEncodings: [],
+    secure: false,
+    status: 200,
+    app: {} as any,
+    res: {} as any,
+    next: (() => {}) as any,
+    connection: {} as any,
+    _parsedUrl: new URL('http://localhost'),
+    id: '',
+    secret: '',
+  } as unknown as Request;
+};
 
 const createMockResponse = () => {
   const res: any = {};

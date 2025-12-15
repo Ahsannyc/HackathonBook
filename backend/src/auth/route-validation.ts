@@ -31,7 +31,7 @@ export const validatePrimaryFocus = (focus: string): boolean => {
 };
 
 // Middleware to validate sign-up request
-export const validateSignUpRequest = (req: Request, res: Response, next: NextFunction) => {
+export const validateSignUpRequest = (req: Request, res: Response, next: NextFunction): void | Response => {
   const { email, password, name, softwareExperience, hardwareExperience, primaryFocus, backgroundDetails } = req.body;
 
   // Validate required fields
@@ -110,7 +110,7 @@ export const validateSignUpRequest = (req: Request, res: Response, next: NextFun
 };
 
 // Middleware to validate sign-in request
-export const validateSignInRequest = (req: Request, res: Response, next: NextFunction) => {
+export const validateSignInRequest = (req: Request, res: Response, next: NextFunction): void | Response => {
   const { email, password } = req.body;
 
   if (!email) {
@@ -138,7 +138,7 @@ export const validateSignInRequest = (req: Request, res: Response, next: NextFun
 };
 
 // Middleware to validate user background update request
-export const validateUserBackgroundRequest = (req: Request, res: Response, next: NextFunction) => {
+export const validateUserBackgroundRequest = (req: Request, res: Response, next: NextFunction): void | Response => {
   const { softwareExperience, hardwareExperience, primaryFocus, backgroundDetails } = req.body;
 
   // Validate optional fields if provided

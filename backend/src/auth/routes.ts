@@ -96,7 +96,7 @@ router.post('/signin', validateSignInRequest, async (req, res) => {
     });
 
     // Return user information
-    res.status(200).json({
+    return res.status(200).json({
       user: result.user,
       session: result.session
     });
@@ -111,7 +111,7 @@ router.post('/signin', validateSignInRequest, async (req, res) => {
       });
     }
 
-    res.status(500).json({
+    return res.status(500).json({
       error: 'Sign in failed',
       message: error instanceof Error ? error.message : 'An unknown error occurred'
     });
@@ -133,13 +133,13 @@ router.get('/me', authenticationMiddleware, async (req, res) => {
     // Get user background information
     const userBackground = await authService.getUserBackground(user.id);
 
-    res.status(200).json({
+    return res.status(200).json({
       user,
       userBackground
     });
   } catch (error) {
     console.error('Get user error:', error);
-    res.status(500).json({
+    return res.status(500).json({
       error: 'Failed to get user information',
       message: error instanceof Error ? error.message : 'An unknown error occurred'
     });
@@ -149,6 +149,13 @@ router.get('/me', authenticationMiddleware, async (req, res) => {
 // Update user background information
 router.put('/user-background', authenticationMiddleware, validateUserBackgroundRequest, async (req, res) => {
   try {
+    if (!req.user) {
+      return res.status(401).json({
+        error: 'Not authenticated',
+        message: 'User must be logged in to update background information'
+      });
+    }
+
     const userId = req.user.id;
     const { softwareExperience, hardwareExperience, primaryFocus, backgroundDetails } = req.body;
 
@@ -160,10 +167,10 @@ router.put('/user-background', authenticationMiddleware, validateUserBackgroundR
       backgroundDetails
     });
 
-    res.status(200).json(updatedBackground);
+    return res.status(200).json(updatedBackground);
   } catch (error) {
     console.error('Update background error:', error);
-    res.status(500).json({
+    return res.status(500).json({
       error: 'Failed to update background information',
       message: error instanceof Error ? error.message : 'An unknown error occurred'
     });
@@ -173,6 +180,13 @@ router.put('/user-background', authenticationMiddleware, validateUserBackgroundR
 // Get personalized content recommendations
 router.get('/personalization', authenticationMiddleware, async (req, res) => {
   try {
+    if (!req.user) {
+      return res.status(401).json({
+        error: 'Not authenticated',
+        message: 'User must be logged in to access personalization recommendations'
+      });
+    }
+
     const userId = req.user.id;
 
     // Get user background information
@@ -192,7 +206,7 @@ router.get('/personalization', authenticationMiddleware, async (req, res) => {
     const adaptations = personalizationService.getContentAdaptations(userBackground);
     const summary = personalizationService.getPersonalizedContentSummary(userBackground);
 
-    res.status(200).json({
+    return res.status(200).json({
       difficulty,
       recommendedSections: sections,
       learningPath: path,
@@ -201,7 +215,7 @@ router.get('/personalization', authenticationMiddleware, async (req, res) => {
     });
   } catch (error) {
     console.error('Personalization error:', error);
-    res.status(500).json({
+    return res.status(500).json({
       error: 'Failed to get personalization recommendations',
       message: error instanceof Error ? error.message : 'An unknown error occurred'
     });
@@ -211,6 +225,13 @@ router.get('/personalization', authenticationMiddleware, async (req, res) => {
 // Sign out route
 router.post('/signout', authenticationMiddleware, async (req, res) => {
   try {
+    if (!req.user || !req.session) {
+      return res.status(401).json({
+        error: 'Not authenticated',
+        message: 'User must be logged in to sign out'
+      });
+    }
+
     const userId = req.user.id;
     const sessionId = req.session.id;
 
@@ -220,12 +241,12 @@ router.post('/signout', authenticationMiddleware, async (req, res) => {
     // Clear session cookie
     res.clearCookie('authjs.session-token');
 
-    res.status(200).json({
+    return res.status(200).json({
       message: 'Successfully signed out'
     });
   } catch (error) {
     console.error('Sign out error:', error);
-    res.status(500).json({
+    return res.status(500).json({
       error: 'Sign out failed',
       message: error instanceof Error ? error.message : 'An unknown error occurred'
     });
