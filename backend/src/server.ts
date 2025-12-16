@@ -6,19 +6,21 @@ import authRoutes from './auth/routes';
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+const allowedOrigins = (process.env.NODE_ENV === 'production'
+  ? [
+      process.env.GITHUB_PAGES_URL || 'https://your-username.github.io',
+      process.env.FRONTEND_URL || 'https://your-frontend-url.vercel.app',
+      process.env.CORS_ORIGIN
+    ].filter(Boolean) // Remove any undefined/null values
+  : [
+      'http://localhost:3000',
+      'http://localhost:3001',
+      'http://localhost:8080'
+    ]);
+
 // Middleware
 app.use(cors({
-  origin: process.env.NODE_ENV === 'production'
-    ? [
-        process.env.GITHUB_PAGES_URL || 'https://your-username.github.io',
-        process.env.FRONTEND_URL || 'https://your-frontend-url.vercel.app',
-        process.env.CORS_ORIGIN
-      ].filter(Boolean) // Remove any undefined/null values
-    : [
-        'http://localhost:3000',
-        'http://localhost:3001',
-        'http://localhost:8080'
-      ],
+  origin: allowedOrigins,
   credentials: true,
 }));
 app.use(express.json());
