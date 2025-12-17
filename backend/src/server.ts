@@ -13,6 +13,7 @@ import express from 'express';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import authRoutes from './auth/routes';
+import ragProxyRoutes from './services/rag-proxy';
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -45,6 +46,7 @@ app.use(cookieParser());
 
 // Routes
 app.use('/api/auth', authRoutes);
+app.use('/rag', ragProxyRoutes);
 
 // Health check endpoint
 app.get('/health', (req, res) => {
@@ -64,7 +66,10 @@ app.get('*', (req, res) => {
       '/api/auth/signout',
       '/api/auth/me',
       '/api/auth/user-background',
-      '/api/auth/personalization'
+      '/api/auth/personalization',
+      '/rag/query',
+      '/rag/selected_text_query',
+      '/rag/health'
     ]
   });
 });

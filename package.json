@@ -27,6 +27,7 @@
   "license": "MIT",
   "dependencies": {
     "@neondatabase/serverless": "^1.0.2",
+    "axios": "^1.13.2",
     "better-auth": "^0.3.6",
     "better-sqlite3": "^12.5.0",
     "cookie-parser": "^1.4.6",
@@ -35,6 +36,7 @@
     "express": "^4.18.2"
   },
   "devDependencies": {
+    "@types/axios": "^0.9.36",
     "@types/better-sqlite3": "^7.6.13",
     "@types/cookie-parser": "^1.4.3",
     "@types/cors": "^2.8.13",
