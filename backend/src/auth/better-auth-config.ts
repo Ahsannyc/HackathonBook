@@ -8,11 +8,19 @@ import { betterAuth } from "better-auth";
  * - Session management
  * - User model customization
  * - GitHub Pages compatibility
+ *
+ * In development, uses SQLite. In production, uses Neon Postgres.
  */
-const createAuth = () => betterAuth({
+const dbProvider = process.env.NEON_DATABASE_URL ? "neon" : "sqlite";
+const dbUrl = process.env.NEON_DATABASE_URL || process.env.DATABASE_URL || "./sqlite.db";
+
+console.log(`Using database provider: ${dbProvider}`);
+console.log(`Database URL: ${dbUrl}`);
+
+const auth = betterAuth({
   database: {
-    provider: "sqlite",
-    url: process.env.DATABASE_URL || "./sqlite.db",
+    provider: dbProvider,
+    url: dbUrl,
   },
   secret: process.env.AUTH_SECRET || "fallback-secret-key-change-this-in-production",
   emailAndPassword: {
@@ -73,4 +81,4 @@ const createAuth = () => betterAuth({
   origin: process.env.NEXTAUTH_URL || "http://localhost:3000",
 });
 
-export const auth = createAuth();
+export { auth };

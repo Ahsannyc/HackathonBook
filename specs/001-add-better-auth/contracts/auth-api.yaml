@@ -1,0 +1,260 @@
+openapi: 3.0.0
+info:
+  title: Authentication API
+  description: API for user authentication with background collection
+  version: 1.0.0
+
+paths:
+  /api/auth/signup:
+    post:
+      summary: Register a new user with background information
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+                - password
+                - name
+                - softwareLevel
+                - hardwareExperience
+              properties:
+                email:
+                  type: string
+                  format: email
+                  description: User's email address
+                password:
+                  type: string
+                  minLength: 8
+                  description: User's password
+                name:
+                  type: string
+                  description: User's display name
+                softwareLevel:
+                  type: string
+                  enum: [beginner, intermediate, advanced]
+                  description: User's software experience level
+                hardwareExperience:
+                  type: string
+                  enum: [none, basic, robotics, embedded]
+                  description: User's hardware experience
+                primaryFocus:
+                  type: string
+                  enum: [software, hardware, both, theory]
+                  description: User's primary technical focus
+                backgroundDetails:
+                  type: string
+                  maxLength: 500
+                  description: Additional background information
+      responses:
+        '200':
+          description: User successfully registered and authenticated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  user:
+                    $ref: '#/components/schemas/User'
+                  session:
+                    $ref: '#/components/schemas/Session'
+                  profile:
+                    $ref: '#/components/schemas/UserProfile'
+        '400':
+          description: Invalid input parameters
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '409':
+          description: Email already exists
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /api/auth/signin:
+    post:
+      summary: Authenticate an existing user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+                - password
+              properties:
+                email:
+                  type: string
+                  format: email
+                password:
+                  type: string
+      responses:
+        '200':
+          description: User successfully authenticated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  user:
+                    $ref: '#/components/schemas/User'
+                  session:
+                    $ref: '#/components/schemas/Session'
+        '400':
+          description: Invalid input parameters
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Invalid credentials
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /api/auth/profile:
+    get:
+      summary: Get current user's profile information
+      responses:
+        '200':
+          description: User profile retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  profile:
+                    $ref: '#/components/schemas/UserProfile'
+        '401':
+          description: User not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    put:
+      summary: Update current user's profile information
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                softwareLevel:
+                  type: string
+                  enum: [beginner, intermediate, advanced]
+                hardwareExperience:
+                  type: string
+                  enum: [none, basic, robotics, embedded]
+                primaryFocus:
+                  type: string
+                  enum: [software, hardware, both, theory]
+                backgroundDetails:
+                  type: string
+                  maxLength: 500
+      responses:
+        '200':
+          description: User profile updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserProfile'
+        '400':
+          description: Invalid input parameters
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: User not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /api/auth/signout:
+    post:
+      summary: Sign out the current user
+      responses:
+        '200':
+          description: User successfully signed out
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        '401':
+          description: User not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        id:
+          type: string
+        email:
+          type: string
+          format: email
+        name:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+        emailVerified:
+          type: boolean
+
+    UserProfile:
+      type: object
+      properties:
+        userId:
+          type: string
+        softwareLevel:
+          type: string
+          enum: [beginner, intermediate, advanced]
+        hardwareExperience:
+          type: string
+          enum: [none, basic, robotics, embedded]
+        primaryFocus:
+          type: string
+          enum: [software, hardware, both, theory]
+        backgroundDetails:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    Session:
+      type: object
+      properties:
+        id:
+          type: string
+        expiresAt:
+          type: string
+          format: date-time
+
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+        message:
+          type: string

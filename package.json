@@ -26,6 +26,7 @@
   "author": "HackathonBook Team",
   "license": "MIT",
   "dependencies": {
+    "@neondatabase/serverless": "^1.0.2",
     "better-auth": "^0.3.6",
     "better-sqlite3": "^12.5.0",
     "cookie-parser": "^1.4.6",
