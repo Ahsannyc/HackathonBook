@@ -9,11 +9,12 @@ import { betterAuth } from "better-auth";
  * - User model customization
  * - GitHub Pages compatibility
  */
-export const auth = betterAuth({
+const createAuth = () => betterAuth({
   database: {
     provider: "sqlite",
-    url: process.env.DATABASE_URL || ":memory:",
+    url: process.env.DATABASE_URL || "./sqlite.db",
   },
+  secret: process.env.AUTH_SECRET || "fallback-secret-key-change-this-in-production",
   emailAndPassword: {
     enabled: true,
     requireEmailVerification: false,
@@ -64,10 +65,12 @@ export const auth = betterAuth({
   accountSecurity: {
     bruteForceProtection: true,
     rateLimiter: {
-      windowMs: 15 * 60 * 1000, // 15 minutes
+      windowMs: 15 * 60 * 60 * 1000, // 15 minutes
       max: 5, // limit each IP to 5 requests per windowMs
     },
   },
   // GitHub Pages compatibility settings
   origin: process.env.NEXTAUTH_URL || "http://localhost:3000",
 });
+
+export const auth = createAuth();

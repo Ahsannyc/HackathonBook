@@ -1,3 +1,14 @@
+import 'dotenv/config';
+
+// Add error handling for unhandled promise rejections
+process.on('unhandledRejection', (reason, promise) => {
+  console.error('Unhandled Rejection at:', promise, 'reason:', reason);
+});
+
+process.on('uncaughtException', (error) => {
+  console.error('Uncaught Exception:', error);
+});
+
 import express from 'express';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
@@ -6,12 +17,17 @@ import authRoutes from './auth/routes';
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+// Debug environment variables
+console.log('DATABASE_URL:', process.env.DATABASE_URL);
+console.log('NODE_ENV:', process.env.NODE_ENV);
+console.log('AUTH_SECRET exists:', !!process.env.AUTH_SECRET);
+
 const allowedOrigins = (process.env.NODE_ENV === 'production'
   ? [
       process.env.GITHUB_PAGES_URL || 'https://your-username.github.io',
       process.env.FRONTEND_URL || 'https://your-frontend-url.vercel.app',
       process.env.CORS_ORIGIN
-    ].filter(Boolean) // Remove any undefined/null values
+    ].filter((origin): origin is string => Boolean(origin)) // Remove any undefined/null values
   : [
       'http://localhost:3000',
       'http://localhost:3001',
