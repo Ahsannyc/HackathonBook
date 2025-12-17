@@ -10,6 +10,7 @@ from passlib.context import CryptContext
 from jose import JWTError, jwt
 
 from rag import RAGSystem
+from ingestion import IngestionPipeline
 from db import get_db, create_tables
 from models import ChatLog, ChatMetadata, User, Session, OnboardingProfile
 
@@ -310,6 +311,58 @@ async def update_profile(request: OnboardingRequest, token: str = None):
         raise HTTPException(status_code=500, detail=str(e))
     finally:
         db.close()
+
+
+class BookIngestionRequest(BaseModel):
+    """Request model for book content ingestion"""
+    book_id: str
+    title: str
+    content: str
+    section_title: Optional[str] = ""
+    page_number: Optional[int] = 1
+
+
+@app.post("/rag/ingest")
+async def ingest_book_content(request: BookIngestionRequest, authorization: str = None):
+    """
+    Ingest book content into the RAG system
+    Processes content through: ingestion → chunking → embedding → vector storage
+    """
+    # Extract token from authorization header
+    token = None
+    if authorization and authorization.startswith("Bearer "):
+        token = authorization.split(" ")[1]
+
+    # Verify user authentication if token provided
+    user_id = get_current_user(token)
+    if not user_id:
+        logger.warning(f"Unauthenticated book ingestion attempt for book: {request.book_id}")
+
+    try:
+        # Initialize the ingestion pipeline
+        ingestion_pipeline = IngestionPipeline()
+
+        # Process the book content through the ingestion pipeline
+        stored_chunks = ingestion_pipeline.process_book_content(
+            book_id=request.book_id,
+            content=request.content,
+            source_file=f"book_{request.book_id}",
+            section_title=request.section_title,
+            page_number=request.page_number
+        )
+
+        logger.info(f"Successfully ingested book {request.book_id} with {len(stored_chunks)} chunks")
+
+        return {
+            "status": "success",
+            "book_id": request.book_id,
+            "title": request.title,
+            "chunks_stored": len(stored_chunks),
+            "message": f"Successfully ingested book content with {len(stored_chunks)} chunks"
+        }
+    except Exception as e:
+        logger.error(f"Error ingesting book content: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Error ingesting book content: {str(e)}")
 
 @app.post("/rag/query")
 async def query_endpoint(request: QueryRequest, authorization: str = None):
