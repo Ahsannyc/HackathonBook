@@ -13,8 +13,8 @@ export const validateEmail = (email: string): boolean => {
 
 // Validate password strength
 export const validatePassword = (password: string): boolean => {
-  // At least 8 characters, with at least one number and one special character
-  const passwordRegex = /^(?=.*\d)(?=.*[!@#$%^&*]).{8,}$/;
+  // At least 8 characters with at least one number (symbols not required)
+  const passwordRegex = /^(?=.*\d).{8,}$/;
   return passwordRegex.test(password);
 };
 
@@ -59,7 +59,7 @@ export const validateSignUpRequest = (req: Request, res: Response, next: NextFun
   if (!validatePassword(password)) {
     return res.status(400).json({
       error: 'Validation failed',
-      message: 'Password must be at least 8 characters long and contain at least one number and one special character'
+      message: 'Password must be at least 8 characters long and contain at least one number'
     });
   }
 
