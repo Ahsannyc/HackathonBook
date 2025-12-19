@@ -7,6 +7,7 @@ from openai import OpenAI
 import logging
 from dotenv import load_dotenv
 from config import Config
+from providers.base import EmbeddingProvider, GenerationProvider
 
 # Load environment variables from .env file
 load_dotenv()
@@ -25,14 +26,24 @@ class RAGSystem:
     - Supports dual-mode retrieval (full-book and selected text)
     """
 
-    def __init__(self):
-        # Initialize OpenAI client
-        api_key = Config.OPENAI_API_KEY
-        if not api_key:
-            raise ValueError("OPENAI_API_KEY environment variable is not set in config")
+    def __init__(self, embedding_provider: Optional[EmbeddingProvider] = None, generation_provider: Optional[GenerationProvider] = None):
+        # Initialize providers based on configuration
+        if embedding_provider is None or generation_provider is None:
+            # Use configuration to determine which provider to initialize
+            provider_type = getattr(Config, 'PROVIDER_TYPE', 'openai').lower()
 
-        self.openai_client = OpenAI(api_key=api_key)
-        self.llm_model = Config.LLM_MODEL
+            if provider_type == 'cohere' and Config.COHERE_API_KEY:
+                from providers.cohere import CohereEmbeddingProvider, CohereGenerationProvider
+                self.embedding_provider = CohereEmbeddingProvider()
+                self.generation_provider = CohereGenerationProvider()
+            else:
+                # Default to OpenAI or fallback to OpenAI if Cohere not configured
+                from providers.openai import OpenAIEmbeddingProvider, OpenAIGenerationProvider
+                self.embedding_provider = OpenAIEmbeddingProvider()
+                self.generation_provider = OpenAIGenerationProvider()
+        else:
+            self.embedding_provider = embedding_provider
+            self.generation_provider = generation_provider
 
         # Initialize Qdrant client
         self.qdrant_client = QdrantClient(
@@ -59,13 +70,9 @@ class RAGSystem:
             logger.info(f"Created collection '{self.collection_name}' for book content chunks")
 
     def embed_text(self, text: str) -> List[float]:
-        """Generate embeddings for text using OpenAI's embedding API"""
+        """Generate embeddings for text using the configured embedding provider"""
         try:
-            response = self.openai_client.embeddings.create(
-                input=text,
-                model="text-embedding-ada-002"  # Using a reliable embedding model
-            )
-            return response.data[0].embedding
+            return self.embedding_provider.embed_text(text)
         except Exception as e:
             logger.error(f"Error generating embedding: {str(e)}")
             # Return a zero vector as fallback (size 1536 for text-embedding-ada-002)
@@ -181,17 +188,12 @@ Keep your answers accurate, concise, and directly based on the provided content.
         ANSWER (based ONLY on the provided context):"""
 
         try:
-            response = self.openai_client.chat.completions.create(
-                model=self.llm_model,
-                messages=[
-                    {"role": "system", "content": system_message},
-                    {"role": "user", "content": user_message}
-                ],
-                max_tokens=1000,
-                temperature=0.3
+            # Use the generation provider instead of direct OpenAI client
+            return self.generation_provider.generate_response(
+                prompt=user_message,
+                context=system_message,
+                user_profile=user_profile
             )
-
-            return response.choices[0].message.content.strip()
 
         except Exception as e:
             logger.error(f"Error generating answer: {str(e)}")
@@ -227,17 +229,12 @@ Keep your answers accurate, concise, and directly based on the selected text."""
         ANSWER (based ONLY on the selected text):"""
 
         try:
-            response = self.openai_client.chat.completions.create(
-                model=self.llm_model,
-                messages=[
-                    {"role": "system", "content": system_message},
-                    {"role": "user", "content": user_message}
-                ],
-                max_tokens=1000,
-                temperature=0.3
+            # Use the generation provider instead of direct OpenAI client
+            return self.generation_provider.generate_response(
+                prompt=user_message,
+                context=system_message,
+                user_profile=user_profile
             )
-
-            return response.choices[0].message.content.strip()
 
         except Exception as e:
             logger.error(f"Error generating answer from selected text: {str(e)}")

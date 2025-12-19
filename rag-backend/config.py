@@ -9,6 +9,14 @@ class Config:
     OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
     LLM_MODEL = os.getenv("LLM_MODEL", "gpt-4o-mini")
 
+    # Cohere Configuration
+    COHERE_API_KEY = os.getenv("COHERE_API_KEY")
+    COHERE_MODEL = os.getenv("COHERE_MODEL", "command-r-plus")
+    COHERE_EMBEDDING_MODEL = os.getenv("COHERE_EMBEDDING_MODEL", "embed-multilingual-v3.0")
+
+    # Provider Configuration
+    PROVIDER_TYPE = os.getenv("PROVIDER_TYPE", "openai").lower()  # openai or cohere
+
     # Qdrant Configuration
     QDRANT_URL = os.getenv("QDRANT_URL")
     QDRANT_API_KEY = os.getenv("QDRANT_API_KEY")
@@ -37,7 +45,15 @@ class Config:
     @classmethod
     def validate_config(cls):
         """Validate that required configuration values are present"""
-        required_vars = ["OPENAI_API_KEY"]
+        # Check if using Cohere and validate accordingly
+        provider_type = getattr(cls, 'PROVIDER_TYPE', 'openai').lower()
+
+        if provider_type == 'cohere' and cls.COHERE_API_KEY:
+            required_vars = ["COHERE_API_KEY"]
+        else:
+            # Default to OpenAI validation
+            required_vars = ["OPENAI_API_KEY"]
+
         missing_vars = []
 
         for var in required_vars:
