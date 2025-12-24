@@ -16,8 +16,8 @@ const config: Config = {
   url: 'https://Ahsannyc.github.io',
   // Set the /<baseUrl>/ pathname under which your site is served
   // For GitHub pages deployment, it is often '/<projectName>/'
-  // For Vercel deployment, use '/'
-  baseUrl: process.env.DEPLOY_ENV === 'vercel' ? '/' : '/HackathonBook/',
+  // For local development, use '/'
+  baseUrl: process.env.NODE_ENV === 'development' || process.env.DEPLOY_ENV === 'vercel' ? '/' : '/HackathonBook/',
 
   // GitHub pages deployment config.
   // If you aren't using GitHub pages, you don't need these.

@@ -56,13 +56,14 @@ app.get('/health', (req, res) => {
 });
 
 // Serve static files from the built book directory
+// But only for actual static assets, not for API routes
 app.use(express.static('../book/build'));
 
-// Fallback route to serve the main index.html for client-side routing
-// This enables the frontend routing to work properly
+// Catch-all route for frontend, but only AFTER static files have been checked
+// This ensures API routes take precedence over static file serving
 app.get('*', (req, res) => {
-  // If it's an API request, return the API endpoints list
-  if (req.path.startsWith('/api/') || req.path.startsWith('/rag/') || req.path === '/health') {
+  // Check if this is an API route that should return an error
+  if (req.path.startsWith('/api/') || req.path.startsWith('/rag/')) {
     res.status(404).json({
       error: 'Not Found',
       message: 'This is an API endpoint. Please use the correct API path or visit the main application.',

@@ -1,6 +1,6 @@
 import React from 'react';
 import Layout from '@theme/Layout';
-import Signup from '../components/auth/Signup';
+import { Signup } from '../components/auth';
 
 function SignupPage() {
   return (

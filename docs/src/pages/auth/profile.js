@@ -1,6 +1,6 @@
 import React from 'react';
 import Layout from '@theme/Layout';
-import Profile from '../components/auth/Profile';
+import { Profile } from '../components/auth';
 
 function ProfilePage() {
   return (

@@ -12,15 +12,31 @@ import { betterAuth } from "better-auth";
  * In development, uses SQLite. In production, uses Neon Postgres.
  */
 const dbProvider = process.env.NEON_DATABASE_URL ? "neon" : "sqlite";
-const dbUrl = process.env.NEON_DATABASE_URL || process.env.DATABASE_URL || "./sqlite.db";
+let dbUrl = process.env.NEON_DATABASE_URL || process.env.DATABASE_URL || "./sqlite.db";
+
+// Normalize the SQLite URL: better-auth's sqlite adapter expects a `file:` URL.
+if (dbProvider === 'sqlite' && !dbUrl.startsWith('file:')) {
+  dbUrl = `file:${dbUrl}`;
+}
 
 console.log(`Using database provider: ${dbProvider}`);
 console.log(`Database URL: ${dbUrl}`);
+console.log(`NODE_ENV: ${process.env.NODE_ENV}`);
+
+// Use the database adapter when DATABASE_URL is set (for both development and production)
+const databaseConfig = process.env.DATABASE_URL ? {
+  provider: dbProvider,
+  url: dbUrl,
+} : undefined; // use in-memory adapter as fallback
 
 const auth = betterAuth({
-  database: {
-    provider: dbProvider,
-    url: dbUrl,
+  database: databaseConfig,
+  // Provide a simple logger so better-auth can surface internal debug/info messages
+  logger: {
+    info: (...args: any[]) => console.log('[better-auth]', ...args),
+    warn: (...args: any[]) => console.warn('[better-auth]', ...args),
+    error: (...args: any[]) => console.error('[better-auth]', ...args),
+    debug: (...args: any[]) => console.debug ? console.debug('[better-auth]', ...args) : console.log('[better-auth]', ...args),
   },
   secret: process.env.AUTH_SECRET || "fallback-secret-key-change-this-in-production",
   emailAndPassword: {

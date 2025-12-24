@@ -1,24 +1,24 @@
-# Implementation Plan: [FEATURE]
+# Implementation Plan: Fix RAG System Imports, Add Cohere Support, and Integrate Frontend with RAG Backend
 
-**Branch**: `[###-feature-name]` | **Date**: [DATE] | **Spec**: [link]
-**Input**: Feature specification from `/specs/[###-feature-name]/spec.md`
+**Branch**: `001-fix-rag-imports` | **Date**: 2025-12-24 | **Spec**: [specs/001-fix-rag-imports/spec.md]
+**Input**: Feature specification from `/specs/001-fix-rag-imports/spec.md`
 
 **Note**: This template is filled in by the `/sp.plan` command. See `.specify/templates/commands/plan.md` for the execution workflow.
 
 ## Summary
 
-Implement fixes for Qdrant client imports and add Cohere integration to the RAG system. The plan includes updating import statements to use proper Qdrant models, creating an abstraction layer to support both OpenAI and Cohere providers, and extending configuration to support Cohere API keys while maintaining backward compatibility. Based on research, the Qdrant imports are already correct, so focus will be on Cohere integration and configuration updates.
+Implement fixes for Qdrant client imports, add Cohere integration to the RAG system, and integrate the frontend with the RAG backend. The plan includes updating import statements to use proper Qdrant models, creating an abstraction layer to support both OpenAI and Cohere providers, extending configuration to support Cohere API keys while maintaining backward compatibility, and updating the server configuration to serve the frontend from the root URL while preserving API functionality. Based on research, the Qdrant imports are already correct, so focus will be on Cohere integration, configuration updates, and frontend-backend integration.
 
 ## Technical Context
 
-**Language/Version**: Python 3.11
-**Primary Dependencies**: FastAPI, OpenAI, Qdrant Client, Cohere, SQLAlchemy, Neon Postgres
-**Storage**: Neon Serverless Postgres (metadata), Qdrant Cloud (vector storage)
+**Language/Version**: Python 3.11, TypeScript/JavaScript
+**Primary Dependencies**: FastAPI, OpenAI, Qdrant Client, Cohere, Express.js, Docusaurus
+**Storage**: Neon Serverless Postgres (metadata), Qdrant Cloud (vector storage), SQLite (local development)
 **Testing**: pytest with unit and integration tests
 **Target Platform**: Linux server (Railway deployment)
-**Project Type**: web (backend API)
+**Project Type**: web (backend API with frontend)
 **Performance Goals**: Maintain current response times with Cohere integration, support 1000+ concurrent users
-**Constraints**: <200ms p95 latency, maintain 99% backward compatibility, graceful fallback when Cohere unavailable
+**Constraints**: <200ms p95 latency, maintain 99% backward compatibility, graceful fallback when Cohere unavailable, serve frontend from root URL
 **Scale/Scope**: Support 10k+ users, 1M+ document chunks in vector database
 
 ## Constitution Check
@@ -30,6 +30,7 @@ Implement fixes for Qdrant client imports and add Cohere integration to the RAG 
 - **Secure and Private Features**: New API key configurations will follow secure practices
 - **Feature Reliability**: All required features (auth, RAG, personalization) must continue to function
 - **Technical Reproducibility**: All technical components remain fully reproducible
+- **User Experience**: Frontend integration will ensure users see the documentation site instead of API error messages
 
 ## Project Structure
 
@@ -56,9 +57,18 @@ rag-backend/
 ├── models.py            # Database models
 ├── db.py                # Database operations
 └── requirements.txt     # Dependencies including Cohere
+
+backend/
+└── src/
+    └── server.ts        # Express server with static file serving and API proxy
+    └── services/
+        └── rag-proxy.ts # Proxy to forward requests to Python RAG backend
+
+book/
+└── build/               # Built Docusaurus frontend files
 ```
 
-**Structure Decision**: Web application backend structure chosen as this is a RAG API service. The existing rag-backend directory contains the Python FastAPI application that provides RAG functionality to the frontend.
+**Structure Decision**: Web application backend structure chosen as this is a RAG API service. The existing rag-backend directory contains the Python FastAPI application that provides RAG functionality to the frontend. The Express server in backend/src/ serves the frontend and acts as a proxy for API requests.
 
 ## Complexity Tracking
 
@@ -67,3 +77,4 @@ rag-backend/
 | Violation | Why Needed | Simpler Alternative Rejected Because |
 |-----------|------------|-------------------------------------|
 | Provider abstraction pattern | Support for multiple AI providers as specified in requirements | Direct API calls would prevent switching between providers |
+| Frontend-backend integration | Users need to see documentation site instead of API error messages | Would result in poor user experience |

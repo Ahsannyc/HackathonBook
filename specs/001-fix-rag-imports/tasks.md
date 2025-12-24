@@ -1,6 +1,6 @@
-# Implementation Tasks: Fix RAG System Imports and Add Cohere Support
+# Implementation Tasks: Fix RAG System Imports, Add Cohere Support, and Integrate Frontend with RAG Backend
 
-**Feature**: Fix RAG System Imports and Add Cohere Support
+**Feature**: Fix RAG System Imports, Add Cohere Support, and Integrate Frontend with RAG Backend
 **Branch**: 001-fix-rag-imports
 **Created**: 2025-12-19
 **Input**: Feature specification from spec.md, implementation plan from plan.md
@@ -9,24 +9,27 @@
 
 - **User Story 1 (P1)**: Core functionality - no dependencies
 - **User Story 2 (P2)**: Depends on US1 for basic structure
-- **User Story 3 (P3)**: Depends on US1 and US2 for configuration
+- **User Story 3 (P1)**: Depends on basic server structure
+- **User Story 4 (P3)**: Depends on US1 and US2 for configuration
 
 ## Parallel Execution Examples
 
 - **US1**: Import fixes can be done in parallel with requirements update
 - **US2**: Provider abstraction and Cohere implementation can be developed in parallel after core structure
-- **US3**: Configuration updates can be done in parallel with provider implementation
+- **US3**: Frontend integration can be done in parallel with provider implementation
+- **US4**: Configuration updates can be done in parallel with provider implementation
 
 ## Implementation Strategy
 
-**MVP Scope**: User Story 1 (Fix Qdrant imports) - This ensures system stability and forms the foundation for additional features.
+**MVP Scope**: User Story 1 (Fix Qdrant imports) and User Story 3 (Frontend integration) - These ensure system stability and proper user experience.
 
 **Incremental Delivery**:
 1. Phase 1-2: Setup and foundational work
 2. Phase 3: Core import fixes (MVP)
 3. Phase 4: Cohere integration
-4. Phase 5: Configuration updates
-5. Phase 6: Polish and validation
+4. Phase 5: Frontend and RAG backend integration
+5. Phase 6: Configuration updates
+6. Phase 7: Polish and validation
 
 ---
 
@@ -79,7 +82,25 @@ Can be fully tested by configuring the system to use Cohere and verifying that e
 - [X] T018 [US2] Test Cohere embedding generation
 - [X] T019 [US2] Test Cohere text generation
 
-## Phase 5: User Story 3 - Configure Additional API Keys (P3)
+## Phase 5: User Story 3 - Integrate Frontend and RAG Backend (P1)
+
+### Goal
+Integrate the frontend (Docusaurus) with the backend server to serve the frontend from the root URL while maintaining API functionality.
+
+### Independent Test
+Can be fully tested by accessing the root URL and verifying the frontend loads, while API endpoints remain accessible.
+
+- [X] T020 [US3] Update server.ts to serve static files from book/build directory
+- [X] T021 [US3] Modify catch-all route to serve frontend for non-API routes
+- [X] T022 [US3] Preserve API functionality for /api/*, /rag/*, and /health routes
+- [X] T023 [US3] Add path import to server.ts for proper file serving
+- [X] T024 [US3] Update RAG backend to use in-memory storage when Qdrant credentials not available
+- [X] T025 [US3] Add proper health check endpoints to RAG backend
+- [X] T026 [US3] Test that frontend loads from root URL
+- [X] T027 [US3] Test that API endpoints still work after frontend integration
+- [X] T028 [US3] Test RAG health check endpoint through proxy
+
+## Phase 6: User Story 4 - Configure Additional API Keys (P3)
 
 ### Goal
 Properly configure all required API keys and environment variables to ensure the RAG system can connect to all necessary services.
@@ -87,22 +108,24 @@ Properly configure all required API keys and environment variables to ensure the
 ### Independent Test
 Can be fully tested by setting up environment variables and verifying the system connects to all configured services.
 
-- [X] T020 [US3] Update config.py to include Cohere configuration options
-- [X] T021 [US3] Add PROVIDER_TYPE setting to select between OpenAI and Cohere
-- [X] T022 [US3] Implement API key validation at startup
-- [X] T023 [US3] Add graceful fallback when Cohere is not configured
-- [X] T024 [US3] Test configuration validation
-- [X] T025 [US3] Test fallback behavior to OpenAI when Cohere unavailable
+- [X] T029 [US4] Update config.py to include Cohere configuration options
+- [X] T030 [US4] Add PROVIDER_TYPE setting to select between OpenAI and Cohere
+- [X] T031 [US4] Implement API key validation at startup
+- [X] T032 [US4] Add graceful fallback when Cohere is not configured
+- [X] T033 [US4] Test configuration validation
+- [X] T034 [US4] Test fallback behavior to OpenAI when Cohere unavailable
 
-## Phase 6: Polish & Cross-Cutting Concerns
+## Phase 7: Polish & Cross-Cutting Concerns
 
 ### Goal
 Final validation, testing, and documentation updates.
 
-- [X] T026 Update documentation with Cohere setup instructions
-- [X] T027 Add error handling for Cohere API rate limits
-- [X] T028 Test backward compatibility with existing OpenAI functionality
-- [X] T029 Update tests to cover Cohere integration
-- [X] T030 Run full integration test suite
-- [X] T031 Update .env.example with Cohere variables
-- [X] T032 Validate all success criteria from specification
+- [X] T035 Update documentation with Cohere setup instructions
+- [X] T036 Add error handling for Cohere API rate limits
+- [X] T037 Test backward compatibility with existing OpenAI functionality
+- [X] T038 Update tests to cover Cohere integration
+- [X] T039 Run full integration test suite
+- [X] T040 Update .env.example with Cohere variables
+- [X] T041 Validate all success criteria from specification
+- [X] T042 Update RAG backend to use port 8001 to avoid conflicts
+- [X] T043 Update environment variables to point to correct RAG backend URL
