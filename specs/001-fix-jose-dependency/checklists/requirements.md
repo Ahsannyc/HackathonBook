@@ -32,3 +32,4 @@
 ## Notes
 
 - Items marked complete - specification is ready for planning phase
+- Updated to include specific version (python-jose==3.3.0) and additional requirements

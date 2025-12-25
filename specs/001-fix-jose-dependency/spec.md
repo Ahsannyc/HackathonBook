@@ -3,7 +3,7 @@
 **Feature Branch**: `001-fix-jose-dependency`
 **Created**: 2025-12-24
 **Status**: Draft
-**Input**: User description: "Fix Railway deployment crash caused by missing Python dependency ("jose") while preserving local and production behavior. Observed Error (Railway Deploy Logs): ModuleNotFoundError: No module named 'jose' Origin: - Error occurs when loading main.py - Import statement: from jose import JWTError, jwt"
+**Input**: User description: "Fix Railway deployment crash caused by missing Python dependency ("jose") while preserving local and production behavior. Observed Error (Railway Deploy Logs): ModuleNotFoundError: No module named 'jose' Origin: - Error occurs when loading main.py - Import statement: from jose import JWTError, jwt. Required Fix: Add python-jose==3.3.0 to requirements.txt to resolve the dependency issue."
 
 ## User Scenarios & Testing *(mandatory)*
 
@@ -69,31 +69,37 @@ As a user of the RAG system, I want all existing features to continue working, s
 
 ### Functional Requirements
 
-- **FR-001**: System MUST include python-jose in the requirements.txt file to prevent ModuleNotFoundError
+- **FR-001**: System MUST include python-jose==3.3.0 in the requirements.txt file to prevent ModuleNotFoundError
 - **FR-002**: System MUST allow successful import of JWTError and jwt from jose module
 - **FR-003**: System MUST deploy successfully on Railway without dependency errors
 - **FR-004**: System MUST maintain backward compatibility with existing functionality
 - **FR-005**: System MUST work both locally and in production environments
 - **FR-006**: System MUST preserve all existing auth and RAG functionality
 - **FR-007**: System MUST pass all verification steps: uvicorn startup, health endpoints, dependency installation
+- **FR-008**: System MUST ensure the jose dependency is compatible with Python 3.13
+- **FR-009**: System MUST maintain the same dependency behavior across all deployment environments
 
 ### Key Entities
 
-- **JoseDependency**: Python package providing JWT encoding/decoding functionality
+- **JoseDependency**: Python package (version 3.3.0) providing JWT encoding/decoding functionality
 - **RequirementsFile**: Text file listing Python dependencies for the RAG backend
 - **RailwayDeployment**: Cloud deployment environment requiring explicit dependency declarations
 - **ModuleImport**: Process of loading jose module during application startup
 - **JWTHandling**: Functionality for handling JSON Web Tokens in the RAG system
+- **DependencyManagement**: Process of declaring and installing required packages for the application
+- **VersionCompatibility**: Requirement that dependencies work across different Python versions (3.13)
 
 ## Success Criteria *(mandatory)*
 
 ### Measurable Outcomes
 
 - **SC-001**: `uvicorn main:app` starts locally with no jose-related errors
-- **SC-002**: Railway build installs python-jose dependency successfully
+- **SC-002**: Railway build installs python-jose==3.3.0 dependency successfully
 - **SC-003**: App boots without ModuleNotFoundError crashes
 - **SC-004**: `/health` endpoint responds with healthy status
 - **SC-005**: `/rag/health` endpoint responds with healthy status
 - **SC-006**: All existing RAG functionality continues to work as before
 - **SC-007**: Dependency installation completes within normal time limits
 - **SC-008**: No regressions are introduced in existing features
+- **SC-009**: The exact version python-jose==3.3.0 is installed in all environments
+- **SC-010**: Deployment process completes without dependency resolution conflicts
