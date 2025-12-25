@@ -1,50 +1,7 @@
 # Railway deployment configuration for RAG Chatbot System
 
 [build]
-builder = "NIXPACKS"
-
-[build.nixpacks]
-# Detect and use Python for the RAG backend
-detectors = ["python", "nodejs"]
-
-phases.setup = '''
-  # Install Python and Node.js (for the proxy if needed)
-  nix-env -iA nixpkgs.python311
-  nix-env -iA nixpkgs.nodejs-18_x
-  nix-env -iA nixpkgs.yarn
-  nix-env -iA nixpkgs.llvm
-'''
-
-phases.install = '''
-  # Install Python dependencies for RAG system
-  python -m venv .venv
-  source .venv/bin/activate
-  pip install --upgrade pip
-  if [ -f "rag-backend/requirements.txt" ]; then
-    pip install -r rag-backend/requirements.txt
-  fi
-
-  # Install Node.js dependencies for proxy if needed
-  if [ -f "package.json" ]; then
-    npm install
-  fi
-  if [ -f "backend/package.json" ]; then
-    cd backend && npm install && cd ..
-  fi
-'''
-
-phases.build = '''
-  # Build Node.js backend if needed
-  if [ -f "backend/tsconfig.json" ]; then
-    cd backend && npm run build && cd ..
-  fi
-'''
-
-phases.start = '''
-  # Start the RAG backend service (Python FastAPI)
-  source .venv/bin/activate
-  cd rag-backend && python -m uvicorn main:app --host 0.0.0.0 --port $PORT
-'''
+builder = "DOCKER"
 
 [env]
 NODE_ENV = "production"
